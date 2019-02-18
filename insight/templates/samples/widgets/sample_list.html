@@ -1,0 +1,13 @@
+        {{ bootstrap.card_open() }}
+            {{ bootstrap.table_open(classes=['table-hover'], head_values=['Timestamp','Name','Filetype','Evil Rating','']) }}
+                    {% for sample in samples %}
+                      <tr>
+                        <td>{{ sample.metadata.timestamp }}</td>
+                        <td>{{ sample.metadata.known_filenames[0]|truncate(32, True) }}</td>
+                        <td>{{ sample.metadata.mimetype }}</td>
+                        <td>{{ bootstrap.progress(sample.evil_rating(), max=48) }}</td>
+                        <td><a href="{{ url_for('samples.view', sample_id=sample.id) }}" role="button" class="btn btn-primary btn-block">View</a></td>
+                    </tr>
+                    {% endfor %}
+            {{ bootstrap.table_close() }}
+        {{ bootstrap.card_close() }}

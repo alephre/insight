@@ -1,0 +1,18 @@
+{% if value|count > 0 %}
+<h4>{{ key|fromkey }}</h4>
+<div class="panel-group" id="accordion_{{ k }}" role="tablist" aria-multiselectable="true">
+{% for _k, _v in value.items() -%}
+    {% if _v is not string and _v is iterable -%}
+    {{ bootstrap.panel_open(header=_k, id=_k, label_text=_v|count) }}
+        {% with value=_v -%}
+            {% include 'samples/widgets/attrblock_table.html' -%}
+        {% endwith -%}
+    {{ bootstrap.panel_close() }}
+    {% else %}
+        {% with key=_k, value=_v -%}
+            {% include 'samples/widgets/attrblock_text.html' -%}
+        {% endwith -%}
+    {% endif -%}
+{% endfor -%}
+</div><!-- .panel-group -->
+{% endif -%}

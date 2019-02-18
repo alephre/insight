@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+{% block title %}Sample Report {{ sample_id|truncate(255, True) }}{% endblock %}
+{% block body %}
+{{ bootstrap.block_header('Artifacts') }}
+          {% for artifact, values in sample.metadata.artifacts.items() %}
+        <a name='{{artifact}}'></a>
+            {% with artifact=artifact, values=values   %}
+                {% include 'samples/widgets/artifact.html' %}
+            {% endwith %}
+          {% endfor %}
+{% endblock %}

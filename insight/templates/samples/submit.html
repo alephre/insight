@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+{% block javascript -%}
+    <!-- Dropzone Plugin Js -->
+    <script src="{{ url_for('static', filename='adminbsb/plugins/dropzone/dropzone.js') }}"></script>
+    <script>
+
+$(function () {
+    Dropzone.options.frmFileUpload = {
+        uploadMultiple: true,
+    }
+});
+
+    </script>
+{% endblock -%}
+{% block title %}Submit new sample{% endblock %}
+{% block body %}
+
+{{ bootstrap.block_header('Submit a sample') }}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        {{ bootstrap.card_open() }}
+            <form action="{{ url_for('samples.submit') }}" id="frmFileUpload" class="dropzone" method="post" enctype="multipart/form-data">
+                {{ bootstrap.form_field_dropzone() }}
+            </form>
+        {{ bootstrap.card_close() }}
+    </div><!-- .col -->
+</div><!-- .row -->
+            <!-- #END# File Upload | Drag & Drop OR With Click & Choose -->
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{{ bootstrap.table_open(head_values=value[0].keys()) }}
+    {% for v in value -%}
+    <tr>
+        {% for _v in v.values() -%}
+        <td>{{ _v }}</td>
+        {% endfor -%}
+    </tr>
+    {% endfor %}
+{{ bootstrap.table_close() }}

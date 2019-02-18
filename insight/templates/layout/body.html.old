@@ -1,0 +1,6 @@
+<body class="theme-red">
+
+{% include 'layout_nav.html' %}
+
+{% include 'layout_scripts.html' %}
+</body>

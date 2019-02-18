@@ -1,0 +1,34 @@
+    <div class="sidebar" data-color="purple" data-background-color="black">
+      <div class="logo">
+        <a href="/" class="simple-text logo-normal">
+            𐤀 aleph
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <!-- Dashboard -->
+          <li class="nav-item ">
+            <a class="nav-link" href="{{ url_for('index') }}">
+              <i class="material-icons">dashboard</i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+          <!-- Samples List -->
+          <li class="nav-item ">
+            <a class="nav-link" href="{{ url_for('list') }}">
+              <i class="material-icons">bug_report</i>
+              <p>Samples</p>
+            </a>
+          </li>
+          <!-- Submit Sample -->
+          <li class="nav-item ">
+            <a class="nav-link" href="{{ url_for('submit') }}">
+              <i class="material-icons">cloud_upload</i>
+              <p>Submit new sample</p>
+            </a>
+          </li>
+
+        </ul>
+      </div>
+    </div>
+

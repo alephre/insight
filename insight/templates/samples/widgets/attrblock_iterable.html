@@ -1,0 +1,16 @@
+{% if value|count > 0 %}
+    {% if value[0] is string -%}
+        {{ bootstrap.panel_open(header=key|fromkey, id=key, label_text=value|count) }}
+        <ul class="list-group">
+        {% for v in value -%}
+            <li class="list-group-item">{{ v }}</li>
+        {% endfor -%}
+        </ul>
+        {{ bootstrap.panel_close() }}
+    {% elif value[0] is mapping -%}
+        <h5>{{ key|fromkey }}</h5>
+        {% with value=value -%}
+            {% include 'samples/widgets/attrblock_table.html' -%}
+        {% endwith %}
+    {% endif -%}
+{% endif -%}

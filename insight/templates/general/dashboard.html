@@ -1,0 +1,89 @@
+{% extends 'layout.html' -%}
+{% block title -%}Dashboard{% endblock -%}
+{% block body -%}
+{{ bootstrap.block_header('Dashboard') }}
+
+<div class="row">
+{{ bootstrap.infobox('Total samples'|upper,counters.all,icon_name='bug_report', color='teal') }}
+{{ bootstrap.infobox('Processing samples'|upper,counters.processing,icon_name='fingerprint', color='cyan') }}
+{{ bootstrap.infobox('Analyzing samples'|upper,counters.analyzing,icon_name='lightbulb_outline', color='blue') }}
+{% if stack_status -%}
+{% set stack_health_text = 'Healthy' -%}
+{% set stack_health_color = 'light-green' -%}
+{% else -%}
+{% set stack_health_text = 'Offlline' -%}
+{% set stack_health_color = 'red' -%}
+{% endif -%}
+{{ bootstrap.infobox('Pipeline health'|upper, stack_health_text,icon_name='local_hospital', color=stack_health_color) }}
+</div><!-- .row -->
+
+<div id="bigChart" class="row">
+    <div class="col-lg-9 col-md-12">
+{{ bootstrap.card_open(header='Pipeline Histogram'|upper) }}
+{{ bootstrap.chart('histogram_chart', height=80) }}
+{{ bootstrap.card_close() }}
+    </div><!-- .col -->
+    <div class="col-lg-3 col-md-12">
+{{ bootstrap.card_open(header='Pipeline Diversity'|upper) }}
+{{ bootstrap.chart('diversity_chart', height=280) }}
+{{ bootstrap.card_close() }}
+    </div><!-- .col -->
+</div><!-- .row -->
+
+
+{{ bootstrap.block_header('Latest samples'|upper) }}
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+    {% include 'samples/widgets/sample_list.html' -%}
+    </div><!-- .col-12 -->
+</div><!-- .row -->
+{% endblock -%}
+{% block javascript -%}
+    <!-- Chart Plugins Js -->
+    <script src='{{ url_for('static', filename='adminbsb/plugins/chartjs/Chart.bundle.js') }}'></script>
+    <script>
+$(function () {
+
+    var histogram_config = {
+            type: 'bar',
+            data: {
+                labels: {{ histogram.labels|tojson() }},
+                datasets: [{
+                    label: "Samples processed",
+                    data: [{{ histogram.data|join(',') }}],
+                    backgroundColor: 'rgba(0, 188, 212, 0.8)'
+                }]
+            },
+            options: {
+                responsive: true,
+                legend: false
+            }
+        }
+
+    new Chart(document.getElementById("histogram_chart").getContext("2d"), histogram_config);
+
+    var diversity_config = {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: [{{ diversity.data|join(',') }}],
+                    backgroundColor: [
+                        "rgb(233, 30, 99)",
+                        "rgb(255, 193, 7)",
+                        "rgb(0, 188, 212)",
+                        "rgb(139, 195, 74)"
+                    ],
+                }],
+                labels: {{ diversity.labels|tojson() }},
+            },
+            options: {
+                responsive: true,
+                legend: true
+            }
+        }
+
+    new Chart(document.getElementById("diversity_chart").getContext("2d"), diversity_config);
+
+});
+    </script>
+{% endblock -%}

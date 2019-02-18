@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% if query -%}{% set title = 'Search results for: '+query -%}{% else -%}{% set title = 'Sample list' -%}{% endif -%}
+{% block title %}{{ title }}{% endblock %}
+{% block body %}
+{{ bootstrap.block_header(title) }}
+
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+    {% include 'samples/widgets/sample_list.html' -%}
+    </div><!-- .col-12 -->
+</div><!-- .row -->
+{% endblock %}

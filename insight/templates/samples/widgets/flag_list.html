@@ -1,0 +1,11 @@
+{{ bootstrap.block_header(analysis|fromkey) }}
+<div class="row">
+    <div class="col-lg-12 col-md-12">
+        {% for flag in values -%}
+            {% with flag=flag -%}
+                {% include 'samples/widgets/flag_block.html' -%}
+            {% endwith -%}
+        {% endfor %}
+    </div><!-- .col -->
+</div><!-- .row -->
+

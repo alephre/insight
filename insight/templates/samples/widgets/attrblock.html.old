@@ -1,0 +1,31 @@
+{% for k,v in values.items() %}
+<dt class="col-sm-3">{{ k }}</dt>
+<dd class="col-sm-9">
+{% if v is mapping %}
+    {% with values=v %}
+        {% include 'samples/attrblock.html' %}
+    {% endwith %}
+{% elif v is iterable and v is not string %}
+    {% if v[0] is mapping %}
+        {% if v|length > 2 %}
+            {% with values=v %}
+                {% include 'samples/attrtable.html' %}
+            {% endwith %}
+        {% else %}
+            {% for _v in v %}
+                <h5>{{ _v.values()|list|first }}</h5>
+                {% with values=_v.values()|list|last %}
+                    {% include 'samples/attrtable.html' %}
+                {% endwith %}
+            {% endfor %}
+        {% endif %}
+    {% else %}
+    <ul>
+        {% for _v in v %}<li>{{ _v }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+{% else %}
+{{ v }}
+{% endif %}
+{% endfor %}
+</dd>

@@ -1,0 +1,118 @@
+{% macro block_header(text) -%}
+<div class="block-header">
+    <h2>{{ text|upper }}</h2>
+</div>
+{% endmacro -%}
+
+{% macro icon(icon_name) -%}
+<i class="material-icons">{{ icon_name }}</i>
+{% endmacro -%}
+
+{% macro progress(value, max=255, class='', showPercent=True) -%}
+<div class="progress">
+    <div class="progress-bar {% if value/max > 0.5 -%}bg-red{% else -%}bg-green{% endif -%} {{ class }}" role="progressbar" aria-valuenow="{{ value }}" aria-valuemin="0" aria-valuemax="{{ max }}" style="width: {{ (value/max)*100 }}%">
+    {% if showPercent -%}{{ '%.2f'|format((value/max)*100) }}%{% endif -%}
+    </div><!-- .progress-bar -->
+</div>
+{% endmacro -%}
+
+{% macro infobox(title, text, icon_name, class='col-lg-3 col-md-3 col-sm-6 col-xs-12', color='') -%}
+<div class="{{ class }}">
+    <div class="info-box bg-{{ color }}">
+        <div class="icon">
+            {{ icon(icon_name) }}
+        </div>
+        <div class="content">
+            <div class="text">{{ title }}</div>
+            <div class="number">{{ text }}</div>
+        </div>
+    </div>
+</div>
+{% endmacro -%}
+
+{% macro label(text, class='') -%}
+<span class="label {{ class }}">{{ text }}</span>
+{% endmacro -%}
+
+{% macro nav_item(text, url, icon_name, endpoint) -%}
+<li class="{% if request.url_rule.endpoint == endpoint -%}active{% endif -%}">
+<a href="{{ url }}">
+    {{ icon(icon_name) }}
+    <span>{{ text }}</span>
+    </a>
+</li>
+{% endmacro -%}
+
+{% macro card_open(classes = ['card-plain'], header = None, subtext = None, header_class='', body_class='') -%}
+<div class="card {{ classes|join(' ') }}">
+    {% if header -%}
+    <div class="header {{ header_class }}">
+        <h2>{{ header }}{% if subtext %} <small>{{ subtext }}</small>{% endif %}</h2>
+    </div>
+    {% endif -%}
+    <div class="body {{ body_class }}">
+{% endmacro -%}
+
+{% macro card_close() -%}
+    </div><!-- .card.body -->
+</div><!-- .card -->
+{% endmacro -%}
+
+{% macro table_open(classes = [], head_values = []) -%}
+<div class="table-responsive">
+    <table class="table {{ classes|join(' ') }}">
+        <thead class="">
+        {% for hv in head_values -%}
+            <th>{{ hv|fromkey }}</th>
+        {% endfor -%}
+        </thead>
+        <tbody>
+{% endmacro -%}
+
+{% macro table_close() -%}
+        </tbody><!-- .tbody -->
+    </table><!-- .table -->
+</div><!-- .table-responsive -->
+{% endmacro -%}
+
+{% macro form_field_dropzone(title='Drop files here or click to upload.', smalltext='Files will be automatically queued and uploaded as you select/drop them in the box.') -%}
+<div class="dz-message">
+    <div class="drag-icon-cph">
+        {{ icon('touch_app') }}
+    </div><!-- .icon -->
+    <h3>{{ title }}</h3>
+    <small>{{ smalltext }}</small>
+</div><!-- .dz-message -->
+<div class="fallback">
+    <input name="file" type="file" multiple />
+</div><!-- .fallback -->
+{% endmacro -%}
+
+{% macro add_dl_item(key, value) -%}
+    <dt class="col-sm-4">{{ key }}</dt>
+    <dd class="col-sm-8">{{ value }}</dd>
+{% endmacro -%}
+
+{% macro panel_open(header, header_icon=None, id=None, label_text=None, classes='panel-col-grey') -%}
+<div class="panel {{ classes }}">
+    <div class="panel-heading" role="tab" id="panelHeading_{{ id|slug }}">
+        <h4 class="panel-title">
+            <a role="button" data-toggle="collapse" href="#panelCollapse_{{ id|slug }}" aria-expanded="true" aria-controls="panelCollapse_{{ id|slug }}">
+                {% if header_icon %}{{ icon(header_icon) }} {% endif -%}{{ header }}
+                {% if label %}{{ label(label_text, class='pull-right') }}{% endif -%}
+            </a>
+        </h4>
+    </div><!-- .panel-heading -->
+    <div id="panelCollapse_{{ id|slug }}" class="panel-collapse collapse out" role="tabpanel" aria-labelledby="panelHeading_{{ id|slug }}">
+        <div class="panel-body">
+{% endmacro -%}
+
+{% macro panel_close() -%}
+        </div><!-- .panel-body -->
+    </div><!-- .panelCollapse_{{ id }} -->
+</div><!-- .panel -->
+{% endmacro -%}
+
+{% macro chart(chart_id, height=150) -%}
+<canvas id="{{ chart_id }}" height="{{ height }}"></canvas>
+{% endmacro -%}

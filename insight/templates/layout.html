@@ -1,0 +1,25 @@
+{% import 'macros/bootstrap.html' as bootstrap with context %}
+<!DOCTYPE html>
+<html>
+
+{% with parent=self -%}
+{% include 'layout/head.html' -%}
+{% endwith -%}
+
+    <body class="theme-deep-purple">
+
+    {% with parent=self -%}
+        {% include 'layout/nav.html' with context -%}
+    {% endwith -%}
+   <section class="content">
+        <div class="container-fluid">
+        {% include 'layout/alerts.html' -%}
+        {% block body -%}{% endblock -%}
+
+       </div>
+    </section>
+        {% include 'layout/scripts.html' -%}
+        {% block javascript -%}{% endblock -%}
+    </body>
+
+</html>

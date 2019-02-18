@@ -1,0 +1,27 @@
+                  <table class="table table-hover">
+                    <thead class="text-warning">
+                      {% for k,v in values[0].items() %}
+                      <th>{{ k|replace('_',' ')|capitalize }}</th>
+                      {% endfor %}
+                    </thead>
+                    <tbody>
+                      {% for item in values %}
+                      <tr>
+                      {% for k,v in item.items() %}
+                        {% if v is mapping %}
+                            {% with values=v %}
+                                {% include 'samples/attrblock.html' %}
+                            {% endwith %}
+                        {% elif v is iterable and v is not string and v[0] is mapping %}
+                            {% with values=v %}
+                                {% include 'samples/attrtable.html' %}
+                            {% endwith %}
+                        {% else %}
+                        <td>{{ v }}</td>
+                        {% endif %}
+                      {% endfor %}
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+

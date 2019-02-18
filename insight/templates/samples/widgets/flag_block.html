@@ -1,0 +1,12 @@
+<div class="aleph_flag alert {% if flag.severity == 'malicious' %}bg-red{% elif flag.severity == 'suspicious' %}bg-deep-purple{% elif flag.severity == 'uncommon' %}bg-blue-grey{% else %}bg-grey{% endif %}">
+    <div class="row">
+        <div class="col-md-10 margin-0">
+            <strong>{{ flag.title }}</strong><br />
+            {{ flag.text }}
+            </div>
+        <div class="col-md-2 margin-0 align-right">
+            <strong>{{ flag.category|fromkey }}</strong><br/>
+            <small>{{ flag.severity|fromkey }}</small>
+        </div><!-- .col -->
+    </div><!-- .row -->
+</div>

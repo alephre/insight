@@ -1,0 +1,13 @@
+aleph.log
+insight.yaml
+celerybeat-schedule.db
+celerybeat.pid
+.venv
+*.swo
+*.swp
+*.swk
+*.swl
+*.swm
+*.swn
+*.pyc
+__pycache__

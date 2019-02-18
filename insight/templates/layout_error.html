@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+
+{% with parent=self %}
+{% include 'layout/head.html' %}
+{% endwith %}
+
+    <body class="four-zero-four">
+
+        {% block body %}{%endblock %}
+
+        {% include 'layout/scripts.html' %}
+
+    </body>
+
+</html>

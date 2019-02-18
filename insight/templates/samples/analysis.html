@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+{% block title %}Sample Report {{ sample_id|truncate(255, True) }}{% endblock %}
+{% block body %}
+{{ bootstrap.block_header('Analysis') }}
+{% if 'flags' in sample.metadata -%}
+    {% for analysis, values in sample.metadata.flags.items() %}
+        {% with analysis=analysis, values=values   %}
+            {% include 'samples/widgets/flag_list.html' %}
+        {% endwith %}
+    {% endfor %}
+{% else -%}
+<p>Analysis unavailable for this file.</p>
+{% endif -%}
+{% endblock %}
