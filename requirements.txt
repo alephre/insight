@@ -8,8 +8,10 @@ itsdangerous==1.1.0
 Jinja2==2.10
 kombu==4.3.0
 MarkupSafe==1.1.0
+python-slugify==2.0.1
 pytz==2018.9
 PyYAML==3.13
+Unidecode==1.0.23
 urllib3==1.24.1
 vine==1.2.0
 Werkzeug==0.14.1
