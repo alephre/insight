@@ -8267,3 +8267,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#783fc6', end
     display: block;
     width: 150px;
 }
+
+table.mitre-attack-table tbody td ul li {
+    padding: 5px;
+    font-size: 0.8em;
+}

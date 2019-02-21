@@ -66,6 +66,7 @@
 <div class="table-responsive">
     <table class="table {{ classes|join(' ') }}">
         <thead class="">
+        <tr>
         {% for hv in head_values -%}
             {% if small_header -%}
             <th><small>{{ hv|fromkey }}</small></th>
@@ -73,6 +74,7 @@
             <th>{{ hv|fromkey }}</th>
             {% endif -%}
         {% endfor -%}
+        </tr>
         </thead>
         <tbody>
 {% endmacro -%}
