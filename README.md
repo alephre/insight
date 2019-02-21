@@ -1,6 +1,8 @@
 # Insight UI
 A simple yet complete web interface for Aleph built on Python 3 and Flask
 
+[![CircleCI](https://circleci.com/bb/janseidl/insight-ui/tree/master.svg?style=svg&circle-token=23ddb1909ab72b7a737e17afbd2319004d26387e)](https://circleci.com/bb/janseidl/insight-ui/tree/master)
+
 ## Requisites
 - Backend: The Insight UI needs only read access to the Elasticsearch index. 
 - Python 3: Insight UI is tested with python version 3.6.8 and is known to work with 3.5.x. 
