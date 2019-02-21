@@ -53,7 +53,7 @@ def format_slugify(value):
 
     return slugify(value).lower()
 
-def format_fromkey(value):
+def format_fromkey(value, sep='_'):
 
-    separated = value.split('_')
+    separated = value.split(sep)
     return ' '.join(separated).title()

@@ -2,8 +2,12 @@ from flask import Blueprint, render_template, flash, current_app, request, abort
 from werkzeug.utils import secure_filename
 from io import BytesIO
 
+from stix2 import TAXIICollectionSource, Filter
+from taxii2client import Collection
+
 from insight.common.utils import dispatch, aleph_rpc
 from insight.models import Sample
+from insight.config.constants import MA_ENTERPRISE_TAXII_URL
 
 mod = Blueprint('samples', __name__, url_prefix='/samples')
 
@@ -37,6 +41,8 @@ def view(sample_id):
     if not sample:
         abort(404)
 
+    ma_phases, ma_entries = ma_get_definitions()
+
     sample_obj = Sample(sample)
 
     threat_analysis = []
@@ -62,7 +68,7 @@ def view(sample_id):
 
             threat_analysis.append(a)
 
-    return render_template('samples/view.html', sample = sample_obj, threat_analysis = threat_analysis, suspicious_flags = suspicious_flags)
+    return render_template('samples/view.html', sample = sample_obj, threat_analysis = threat_analysis, suspicious_flags = suspicious_flags, ma_entries=ma_entries)
 
 @mod.route('/artifacts/<sample_id>')
 def artifacts(sample_id):
@@ -82,7 +88,43 @@ def analysis(sample_id):
     if not sample:
         abort(404)
 
-    return render_template('samples/analysis.html', sample = Sample(sample))
+    sample_obj = Sample(sample)
+
+    # Generate MITRE ATT&CK Matrix
+    kill_chain_phases = {
+        'initial-access': {},
+        'execution': {},
+        'persistence': {},
+        'privilege-escalation': {},
+        'defense-evasion': {},
+        'credential-access': {},
+        'discovery': {},
+        'lateral-movement': {},
+        'collection': {},
+        'exfiltration': {},
+        'command-and-control': {},
+    }
+    kill_chain_headers = [x.replace('-',' ') for x in kill_chain_phases.keys()]
+    ma_phases, ma_entries = ma_get_definitions()
+
+    severity_mapping = {'info': 1, 'uncommon': 2, 'suspicious': 3, 'malicious': 4}
+
+    for f_provider, f_flags in sample_obj.metadata['flags'].items():
+        for flag in f_flags:
+            for ma in flag['mitre_attack_id']:
+                for phase, ids in ma_phases.items():
+                    kp = kill_chain_phases[phase]
+                    if ma in ids:
+                        if not ma in kp.keys():
+                            kp[ma] = {
+                                'highest_severity': 0,
+                                'flags': []
+                            }
+                        severity_rating = severity_mapping[flag['severity']] 
+                        kp[ma]['highest_severity'] = severity_rating if severity_rating > kp[ma]['highest_severity'] else kp[ma]['highest_severity']
+                        kp[ma]['flags'].append(flag)
+
+    return render_template('samples/analysis.html', sample = sample_obj, ma_phases=ma_phases, ma_entries=ma_entries, kill_chain=kill_chain_phases, kill_chain_headers=kill_chain_headers)
 
 @mod.route('/samples/submit', methods=['GET','POST'])
 def submit():
@@ -117,3 +159,42 @@ def search():
     search_result = [Sample(s) for s in current_app.datastore.search(query)]
 
     return render_template('samples/list.html', samples = search_result, query=query)
+
+# MITRE ATT&CK Functions
+def ma_get_definitions():
+
+    # Load MITRE's Att&ck Enterprise definitions
+    collection = Collection(MA_ENTERPRISE_TAXII_URL)
+    tc_source = TAXIICollectionSource(collection)
+    stix_filter = Filter("type", "=", "attack-pattern")
+    attack = tc_source.query(stix_filter)
+
+    return ma_parse(attack)
+
+def ma_parse(attack):
+
+    phases = {}
+    entries = {}
+
+    for entry in attack:
+        name = entry['name']
+        description = entry['description']
+        phase = entry['kill_chain_phases'][0]['phase_name']
+
+        if phase not in phases.keys():
+            phases[phase] = []
+
+        entry_id = entry['external_references'][0]['external_id']
+        url = entry['external_references'][0]['url']
+
+        phases[phase].append(entry_id)
+
+        entry_body = {
+            'name': name,
+            'url': url,
+            'description': description,
+        }
+
+        entries[entry_id] = entry_body
+
+    return (phases, entries)

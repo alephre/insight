@@ -8260,3 +8260,10 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#783fc6', end
 .sidebar .copyright a:hover {
     color: lime !important;
 }
+
+.navbar-brand {
+    background: url('/static/images/aleph-logo.png') center left no-repeat;
+    text-indent: -9999px;
+    display: block;
+    width: 150px;
+}

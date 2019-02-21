@@ -16,7 +16,7 @@
 </div>
 {% endmacro -%}
 
-{% macro infobox(title, text, icon_name, class='col-lg-3 col-md-3 col-sm-6 col-xs-12', color='') -%}
+{% macro infobox(title, text, icon_name, class='col-lg-3 col-md-3 col-sm-6 col-xs-12', color='', count_to=False, count_decimals=0, count_number=None) -%}
 <div class="{{ class }}">
     <div class="info-box bg-{{ color }}">
         <div class="icon">
@@ -24,7 +24,11 @@
         </div>
         <div class="content">
             <div class="text">{{ title }}</div>
+            {% if count_to -%}
+            <div class="number count-to" data-from="0" data-to="{% if count_number -%}{{ count_number }}{% else -%}{{ text }}{% endif -%}" data-decimals="{{ count_decimals }}">{{ text }}</div>
+            {% else -%}
             <div class="number">{{ text }}</div>
+            {% endif -%}
         </div>
     </div>
 </div>
@@ -58,12 +62,16 @@
 </div><!-- .card -->
 {% endmacro -%}
 
-{% macro table_open(classes = [], head_values = []) -%}
+{% macro table_open(classes = [], head_values = [], small_header=False) -%}
 <div class="table-responsive">
     <table class="table {{ classes|join(' ') }}">
         <thead class="">
         {% for hv in head_values -%}
+            {% if small_header -%}
+            <th><small>{{ hv|fromkey }}</small></th>
+            {% else -%}
             <th>{{ hv|fromkey }}</th>
+            {% endif -%}
         {% endfor -%}
         </thead>
         <tbody>

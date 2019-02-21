@@ -43,9 +43,9 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 {% else -%}
 {% set evil_color = 'red' -%}
 {% endif -%}
-{{ bootstrap.infobox('Evil Rating'|upper,'%.2f%%'|format(evil_rating),icon_name='bug_report', color=evil_color) }}
-{{ bootstrap.infobox('Artifacts'|upper,sample.total_artifacts(),icon_name='fingerprint', color='deep-purple') }}
-{{ bootstrap.infobox('Flags'|upper,sample.total_flags(),icon_name='flag', color='deep-purple') }}
+{{ bootstrap.infobox('Evil Rating'|upper,'%.2f%%'|format(evil_rating),icon_name='bug_report', color=evil_color, count_to=True, count_decimals=2, count_number=evil_rating) }}
+{{ bootstrap.infobox('Artifacts'|upper,sample.total_artifacts(),icon_name='fingerprint', color='deep-purple', count_to=True) }}
+{{ bootstrap.infobox('Flags'|upper,sample.total_flags(),icon_name='flag', color='deep-purple', count_to=True) }}
 {{ bootstrap.infobox('Something'|upper,'IDK',icon_name='bookmark', color='deep-purple') }}
 </div><!-- .row -->
 

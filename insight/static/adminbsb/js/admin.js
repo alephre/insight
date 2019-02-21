@@ -461,5 +461,7 @@ $(function () {
     $.AdminBSB.select.activate();
     $.AdminBSB.search.activate();
 
+    $('.count-to').countTo();
+
     setTimeout(function () { $('.page-loader-wrapper').fadeOut(); }, 50);
 });

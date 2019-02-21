@@ -3,6 +3,13 @@
         <div class="col-md-10 margin-0">
             <strong>{{ flag.title }}</strong><br />
             {{ flag.text }}
+            {% if flag.mitre_attack_id|count > 0 -%}
+            <br />
+            {# <strong>MITRE ATT&CK:</strong> #}
+            {% for ma in flag.mitre_attack_id -%}
+            <span class="label label-default">{{ ma_entries[ma].name }} - {{ ma }}</span>
+            {% endfor -%}
+            {% endif -%}
             </div>
         <div class="col-md-2 margin-0 align-right">
             <strong>{{ flag.category|fromkey }}</strong><br/>
