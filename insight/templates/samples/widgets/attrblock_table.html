@@ -1,9 +1,19 @@
+{% if value|count > 0 %}
 {{ bootstrap.table_open(head_values=value[0].keys()) }}
     {% for v in value -%}
     <tr>
         {% for _v in v.values() -%}
+        {% if _v|is_list -%}
+        <td>
+        {% with value=_v -%}
+            {% include 'samples/widgets/attrblock_iterable.html' -%}
+        {% endwith -%}
+        </td>
+        {% else -%}
         <td>{{ _v }}</td>
+        {% endif -%}
         {% endfor -%}
     </tr>
     {% endfor %}
 {{ bootstrap.table_close() }}
+{% endif -%}

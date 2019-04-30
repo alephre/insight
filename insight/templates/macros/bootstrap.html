@@ -38,13 +38,31 @@
 <span class="label {{ class }}">{{ text }}</span>
 {% endmacro -%}
 
-{% macro nav_item(text, url, icon_name, endpoint) -%}
+{% macro nav_item(text, url, icon_name, endpoint, anchor=None, children=[]) -%}
+{% if not children %}
 <li class="{% if request.url_rule.endpoint == endpoint -%}active{% endif -%}">
-<a href="{{ url }}">
+<a href="{{ url }}{% if anchor -%}#{{ anchor }}{% endif -%}">
+    {%if icon_name -%}
     {{ icon(icon_name) }}
     <span>{{ text }}</span>
+    {% else -%}
+    {{ text|fromkey }}
+    {% endif -%}
     </a>
 </li>
+{% else %}
+<li class="{% if request.url_rule.endpoint == endpoint -%}active{% endif -%}">
+    <a href="javascript:void(0);" class="menu-toggle">
+        {{ icon(icon_name) }}
+        <span>{{ text }}</span>
+    </a>
+    <ul class="ml-menu">
+    {% for child in children -%}
+        {{ nav_item(child, url, None, endpoint, anchor=child) }}
+    {% endfor -%}
+    </ul>
+</li>
+{% endif -%}
 {% endmacro -%}
 
 {% macro card_open(classes = ['card-plain'], header = None, subtext = None, header_class='', body_class='') -%}

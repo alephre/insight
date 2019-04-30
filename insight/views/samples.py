@@ -4,10 +4,11 @@ from io import BytesIO
 
 from stix2 import TAXIICollectionSource, Filter
 from taxii2client import Collection
+from math import ceil
 
 from insight.common.utils import dispatch, aleph_rpc
 from insight.models import Sample
-from insight.config.constants import MA_ENTERPRISE_TAXII_URL
+from insight.config.constants import MA_ENTERPRISE_TAXII_URL, DEFAULT_PAGE_SIZE
 
 mod = Blueprint('samples', __name__, url_prefix='/samples')
 
@@ -16,9 +17,18 @@ mod = Blueprint('samples', __name__, url_prefix='/samples')
 @mod.route('/list/<int:page>')
 def list(page=1):
 
-    all_samples = [Sample(s) for s in current_app.datastore.all()]
+    if page < 1:
+        abort(404)
+
+    all_samples = [Sample(s) for s in current_app.datastore.all(page)]
+
+    if page > 1 and len(all_samples) <= 0:
+        abort(404)
+
+    total_samples = current_app.datastore.count_all()
+    num_pages = ceil(total_samples/DEFAULT_PAGE_SIZE)
     
-    return render_template('samples/list.html', samples=all_samples)
+    return render_template('samples/list.html', samples=all_samples, num_pages=num_pages,page=page)
 
 
 @mod.route('/download/<sample_id>')

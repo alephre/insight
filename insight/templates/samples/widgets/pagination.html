@@ -1,0 +1,17 @@
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    <li class="{% if page == 1 %}disabled {% endif -%}">
+      <a href="{% if page ==  1 %}#{% else %}{{ url_for(request.url_rule.endpoint, page = page-1) }}{% endif %}" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+{% for p in range(1, num_pages+1) %}
+    <li class="{% if page == p -%}active{% endif -%}"><a href="{{ url_for(request.url_rule.endpoint, page = p) }}">{{ p }}</a></li>
+{% endfor -%}
+    <li class="{% if page == num_pages %}disabled {% endif -%}">
+      <a href="{% if page == num_pages  %}#{% else %}{{ url_for(request.url_rule.endpoint, page = page+1) }}{% endif %}" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>

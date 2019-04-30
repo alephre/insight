@@ -2,6 +2,7 @@ from collections import OrderedDict
 from elasticsearch import Elasticsearch as ES, NotFoundError
 
 from insight.models import Datastore
+from insight.config.constants import DEFAULT_PAGE_SIZE
 
 class Elasticsearch(object):
 
@@ -13,7 +14,7 @@ class Elasticsearch(object):
 
         self.engine = ES()
 
-    def all(self, start=0, size=15):
+    def all(self, page=1, size=DEFAULT_PAGE_SIZE):
 
         body = {
                 'query': {
@@ -25,6 +26,8 @@ class Elasticsearch(object):
                     },
                 }
             }
+
+        start = ((page - 1) * size)
 
         res = self.raw_search(body, start=start, size=size)
 
@@ -39,7 +42,7 @@ class Elasticsearch(object):
 
         return OrderedDict(sorted(result.items()))
 
-    def raw_search(self, body, q=None, start=0, size=15):
+    def raw_search(self, body, q=None, start=0, size=DEFAULT_PAGE_SIZE):
 
         result = []
 
@@ -53,7 +56,9 @@ class Elasticsearch(object):
         return hits
     
 
-    def search(self, query, start=0, size=15):
+    def search(self, query, page=1, size=DEFAULT_PAGE_SIZE):
+
+        start = ((page - 1) * size)
 
         result = []
 

@@ -1,0 +1,23 @@
+{{ bootstrap.block_header('Mitre ATT&CK') }}
+        {{ bootstrap.table_open(head_values=kill_chain_headers, small_header=True, classes=['mitre-attack-table']) }}
+<tr>
+{% for phase, ma_ids in kill_chain.items() -%}
+    <td>
+        <ul class="list-group">
+    {% for ma_id, ma_obj in ma_ids.items() -%}
+    {% if ma_obj.highest_severity == 4 -%}
+    {% set ma_bg = 'bg-red' %}
+    {% elif ma_obj.highest_severity == 3 -%}
+    {% set ma_bg = 'bg-deep-purple' %}
+    {% elif ma_obj.highest_severity == 2 -%}
+    {% set ma_bg = 'bg-blue-grey' %}
+    {% else -%}
+    {% set ma_bg = 'bg-grey' %}
+    {% endif -%}
+            <li class="list-group-item {{ ma_bg }}">{{ ma_entries[ma_id].name }} ({{ ma_obj.flags|count }})</li>
+    {% endfor -%}
+        </ul><!-- end :: ma flag list -->
+    </td><!-- end :: {{ phase }} -->
+{% endfor -%}
+</tr>
+{{ bootstrap.table_close() }}

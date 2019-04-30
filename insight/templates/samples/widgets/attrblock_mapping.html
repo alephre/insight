@@ -2,11 +2,17 @@
 <h4>{{ key|fromkey }}</h4>
 <div class="panel-group" id="accordion_{{ k }}" role="tablist" aria-multiselectable="true">
 {% for _k, _v in value.items() -%}
-    {% if _v is not string and _v is iterable -%}
+    {% if _v|is_list -%}
     {{ bootstrap.panel_open(header=_k, id=_k, label_text=_v|count) }}
+    {% if _v[0]|is_list -%}
         {% with value=_v -%}
             {% include 'samples/widgets/attrblock_table.html' -%}
         {% endwith -%}
+    {% else -%}
+        {% with key=_k, value=_v -%}
+            {% include 'samples/widgets/attrblock_list.html' -%}
+        {% endwith -%}
+    {% endif -%}
     {{ bootstrap.panel_close() }}
     {% else %}
         {% with key=_k, value=_v -%}

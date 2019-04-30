@@ -24,6 +24,23 @@ class Sample(object):
 
         return count
 
+    def total_mitre_attack_tactics(self):
+
+        if 'flags' not in self.metadata.keys():
+            return 0
+
+        tactics = []
+
+        for analyzer, flags in self.metadata['flags'].items():
+            for flag in flags:
+                mid = flag['mitre_attack_id']
+                if mid and mid not in tactics:
+                    tactics.append(mid)
+
+        return len(tactics)
+
+        
+
     def total_artifacts(self):
 
         count = 0

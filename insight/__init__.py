@@ -33,14 +33,15 @@ def create_app():
     app.datastore = Elasticsearch()
 
     # Register Custom Filters
-    app.jinja_env.filters['slug'] = format_slugify
-    app.jinja_env.filters['fromkey'] = format_fromkey
-    app.jinja_env.filters['datetime'] = format_datetime
+    app.jinja_env.filters['slug'] = jinja_filter_format_slugify
+    app.jinja_env.filters['fromkey'] = jinja_filter_format_fromkey
+    app.jinja_env.filters['datetime'] = jinja_filter_format_datetime
+    app.jinja_env.filters['is_list'] = jinja_filter_is_list
 
     return app
 
 # Custom filters
-def format_datetime(value, format='medium'):
+def jinja_filter_format_datetime(value, format='medium'):
     if format == 'full':
         format="%Y-%m-%dT%H:%M:%S.%f"
     elif format == 'medium':
@@ -49,11 +50,14 @@ def format_datetime(value, format='medium'):
     _date = datetime.fromtimestamp(value)
     return _date.strftime(format)
 
-def format_slugify(value):
+def jinja_filter_format_slugify(value):
 
     return slugify(value).lower()
 
-def format_fromkey(value, sep='_'):
+def jinja_filter_format_fromkey(value, sep='_'):
 
     separated = value.split(sep)
     return ' '.join(separated).title()
+
+def jinja_filter_is_list(value):
+    return isinstance(value, list)
