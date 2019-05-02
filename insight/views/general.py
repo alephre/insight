@@ -20,7 +20,7 @@ def index():
     }
 
     # Latest samples
-    latest_samples = [Sample(s) for s in current_app.datastore.all()]
+    latest_samples = current_app.datastore.all()
 
     # Graphs
     div = current_app.datastore.sample_diversity()

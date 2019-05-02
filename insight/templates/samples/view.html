@@ -24,7 +24,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     <div class="col-lg-12 col-md-12">
         {{ bootstrap.card_open() }}
                     <dl class="row">
-                    {{ bootstrap.add_dl_item('Known Filenames:', sample.metadata.known_filenames|join(', ')) }}
+                    {{ bootstrap.add_dl_item('Known Filenames:', sample.tracking_data.known_filenames|join(', ')) }}
                     {{ bootstrap.add_dl_item('Size:', sample.metadata.size|filesizeformat) }}
                     {{ bootstrap.add_dl_item('Timestamp:', sample.metadata.timestamp) }}
                     {{ bootstrap.add_dl_item('File Type:', sample.metadata.filetype) }}
@@ -58,7 +58,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     <!-- Threat Analysis -->
     <div class="col-md-12">
     {{ bootstrap.card_open() }}
-        {% if sample.metadata.analyzers_completed|count > 0 -%}
+        {% if sample.tracking_data.analyzers_completed|count > 0 -%}
         {{ bootstrap.table_open(classes=['table-condensed','dashboard-task-infos'], head_values=['Analyzer','Info','Uncommon','Suspicious','Malicious','Evil Rating']) }}
             {% for ta in threat_analysis -%}
                 <tr>
@@ -110,12 +110,12 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     <!-- Processors -->
     <div class="col-md-6 col-sm-12">
         {{ bootstrap.card_open(header='Processors') }}
-        {% if sample.metadata.processors_dispatched|count > 0 -%}
+        {% if sample.tracking_data.processors_dispatched|count > 0 -%}
         <ul class="list-group">
-        {% for processor in sample.metadata.processors_dispatched -%}
+        {% for processor in sample.tracking_data.processors_dispatched -%}
             <li class="list-group-item">
                 {{ processor|fromkey }}
-                {% if processor in sample.metadata.processors_completed -%}{{ bootstrap.label('completed', class='pull-right label-success') }}{% else %}{{ bootstrap.label('pending', class='pull-right label-primary') }}{% endif -%}
+                {% if processor in sample.tracking_data.processors_completed -%}{{ bootstrap.label('completed', class='pull-right label-success') }}{% else %}{{ bootstrap.label('pending', class='pull-right label-primary') }}{% endif -%}
             </li>
         {% endfor -%}
         </ul><!-- .list-group -->
@@ -129,12 +129,12 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     <!-- Analyzers -->
     <div class="col-md-6 col-sm-12">
         {{ bootstrap.card_open(header='Analyzers') }}
-        {% if sample.metadata.analyzers_dispatched|count > 0 -%}
+        {% if sample.tracking_data.analyzers_dispatched|count > 0 -%}
         <ul class="list-group">
-        {% for analyzer in sample.metadata.analyzers_dispatched -%}
+        {% for analyzer in sample.tracking_data.analyzers_dispatched -%}
             <li class="list-group-item">
                 {{ analyzer|fromkey }}
-                {% if analyzer in sample.metadata.analyzers_completed -%}{{ bootstrap.label('completed', class='pull-right label-success') }}{% else %}{{ bootstrap.label('pending', class='pull-right label-primary') }}{% endif -%}
+                {% if analyzer in sample.tracking_data.analyzers_completed -%}{{ bootstrap.label('completed', class='pull-right label-success') }}{% else %}{{ bootstrap.label('pending', class='pull-right label-primary') }}{% endif -%}
             </li>
         {% endfor -%}
         </ul><!-- .list-group -->

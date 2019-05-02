@@ -1,13 +1,14 @@
 from collections import OrderedDict
 from elasticsearch import Elasticsearch as ES, NotFoundError
 
-from insight.models import Datastore
+from insight.models import Datastore, Sample
 from insight.config.constants import DEFAULT_PAGE_SIZE
 
-class Elasticsearch(object):
+class Elasticsearch(Datastore):
 
     engine = None
-    index = 'aleph'
+    index = 'aleph-samples'
+    tracking_index = 'aleph-tracking'
     doc_type = 'sample'
 
     def __init__(self):
@@ -15,6 +16,8 @@ class Elasticsearch(object):
         self.engine = ES()
 
     def all(self, page=1, size=DEFAULT_PAGE_SIZE):
+
+        entry_table = {}
 
         body = {
                 'query': {
@@ -31,16 +34,62 @@ class Elasticsearch(object):
 
         res = self.raw_search(body, start=start, size=size)
 
-        return res['hits']['hits']
+        entries = res['hits']['hits']
 
-    def get(self, sample_id):
+        for entry in entries:
+            sample_id = entry['_id']
+            entry_table[sample_id] = {'metadata': entry, 'tracking_data': {}}
 
-        result = self.engine.get(index=self.index, doc_type=self.doc_type, id=sample_id, ignore=404)
+        # Get tracking data for retrieved ids
+        tracking_data = self._mget(list(entry_table.keys()), index=self.tracking_index)
+
+        for td in tracking_data:
+            sample_id = td['_id']
+            entry_table[sample_id]['tracking_data'] = td
+
+        rv = []
+
+        for sample_id, sample_data in entry_table.items():
+            rv.append(Sample(sample_data['metadata'], sample_data['tracking_data']))
+
+        return rv
+
+    def _mget(self, ids, index=None):
+
+        if not index:
+            index = self.index
+
+        body = { 'ids': ids }
+
+        result = self.engine.mget(index=index, doc_type=self.doc_type, body=body, ignore=404)
+
+        if 'docs' not in result:
+            return None
+
+        return result['docs']
+
+
+    def _get(self, sample_id, index=None):
+
+        if not index:
+            index = self.index
+
+        result = self.engine.get(index=index, doc_type=self.doc_type, id=sample_id, ignore=404)
 
         if result['found'] == False:
             return None
 
         return OrderedDict(sorted(result.items()))
+
+    def get(self, sample_id):
+
+        metadata = self._get(sample_id)
+        tracking_data = self._get(sample_id, index=self.tracking_index)
+
+        if not metadata or not tracking_data:
+            return None
+
+        return Sample(metadata, tracking_data)
 
     def raw_search(self, body, q=None, start=0, size=DEFAULT_PAGE_SIZE):
 
@@ -75,7 +124,7 @@ class Elasticsearch(object):
 
     def count(self, body):
 
-        return self.engine.count(index=self.index, doc_type=self.doc_type, body=body)['count']
+        return self.engine.count(index=self.tracking_index, doc_type=self.doc_type, body=body)['count']
 
     # Aux Methods 
 

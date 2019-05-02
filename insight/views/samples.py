@@ -20,7 +20,7 @@ def list(page=1):
     if page < 1:
         abort(404)
 
-    all_samples = [Sample(s) for s in current_app.datastore.all(page)]
+    all_samples = current_app.datastore.all(page)
 
     if page > 1 and len(all_samples) <= 0:
         abort(404)
@@ -53,13 +53,11 @@ def view(sample_id):
 
     ma_phases, ma_entries = ma_get_definitions()
 
-    sample_obj = Sample(sample)
-
     threat_analysis = []
     suspicious_flags = []
 
-    if 'flags' in sample_obj.metadata.keys():
-        for analyzer, flags in sample_obj.metadata['flags'].items():
+    if 'flags' in sample.metadata.keys():
+        for analyzer, flags in sample.metadata['flags'].items():
 
             a = {
                 'analyzer': analyzer,
@@ -78,7 +76,7 @@ def view(sample_id):
 
             threat_analysis.append(a)
 
-    return render_template('samples/view.html', sample = sample_obj, threat_analysis = threat_analysis, suspicious_flags = suspicious_flags, ma_entries=ma_entries)
+    return render_template('samples/view.html', sample = sample, threat_analysis = threat_analysis, suspicious_flags = suspicious_flags, ma_entries=ma_entries)
 
 @mod.route('/artifacts/<sample_id>')
 def artifacts(sample_id):
@@ -88,7 +86,7 @@ def artifacts(sample_id):
     if not sample:
         abort(404)
 
-    return render_template('samples/artifacts.html', sample = Sample(sample))
+    return render_template('samples/artifacts.html', sample = sample)
 
 @mod.route('/analysis/<sample_id>')
 def analysis(sample_id):
@@ -97,8 +95,6 @@ def analysis(sample_id):
 
     if not sample:
         abort(404)
-
-    sample_obj = Sample(sample)
 
     # Generate MITRE ATT&CK Matrix
     kill_chain_phases = {
@@ -119,7 +115,7 @@ def analysis(sample_id):
 
     severity_mapping = {'info': 1, 'uncommon': 2, 'suspicious': 3, 'malicious': 4}
 
-    for f_provider, f_flags in sample_obj.metadata['flags'].items():
+    for f_provider, f_flags in sample.metadata['flags'].items():
         for flag in f_flags:
             for ma in flag['mitre_attack_id']:
                 for phase, ids in ma_phases.items():
@@ -134,7 +130,7 @@ def analysis(sample_id):
                         kp[ma]['highest_severity'] = severity_rating if severity_rating > kp[ma]['highest_severity'] else kp[ma]['highest_severity']
                         kp[ma]['flags'].append(flag)
 
-    return render_template('samples/analysis.html', sample = sample_obj, ma_phases=ma_phases, ma_entries=ma_entries, kill_chain=kill_chain_phases, kill_chain_headers=kill_chain_headers)
+    return render_template('samples/analysis.html', sample = sample, ma_phases=ma_phases, ma_entries=ma_entries, kill_chain=kill_chain_phases, kill_chain_headers=kill_chain_headers)
 
 @mod.route('/samples/submit', methods=['GET','POST'])
 def submit():
@@ -161,6 +157,7 @@ def submit():
 @mod.route('/samples/search')
 def search():
     
+    #@FIXME return must be already <Sample> and support pagination
     query = request.args.get('q')
 
     if not query:

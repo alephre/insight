@@ -3,10 +3,10 @@
                     {% for sample in samples %}
                       <tr>
                         <td>{{ sample.metadata.timestamp }}</td>
-                        <td>{{ sample.metadata.known_filenames[0]|truncate(64, True) }}</td>
+                        <td>{{ sample.tracking_data.known_filenames[0]|truncate(64, True) }}</td>
                         <td>{{ sample.metadata.filetype }}</td>
                         <td>{{ bootstrap.progress(sample.evil_rating(), max=48) }}</td>
-                        <td>{% if 'scan_completed' in sample.metadata.tags %}<span class="badge badge-success">completed</span>{% else %}<span class="badge badge-light">pending</span>{% endif %}</td>
+                        <td>{% if 'scan_completed' in sample.tracking_data.tags %}<span class="badge badge-success">completed</span>{% else %}<span class="badge badge-light">pending</span>{% endif %}</td>
                         <td><a href="{{ url_for('samples.view', sample_id=sample.id) }}" role="button" class="btn btn-primary btn-block">View</a></td>
                     </tr>
                     {% endfor %}

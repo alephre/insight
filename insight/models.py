@@ -6,11 +6,12 @@ class Sample(object):
     sample = None
     metadata = {}
 
-    def __init__(self, sample):
+    def __init__(self, sample, tracking_data):
 
         self.id = sample['_id']
         self.sample = sample
         self.metadata = self.sample['_source']
+        self.tracking_data = tracking_data['_source']
 
     def total_flags(self):
 
