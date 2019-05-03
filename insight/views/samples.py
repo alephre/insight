@@ -6,6 +6,8 @@ from stix2 import TAXIICollectionSource, Filter
 from taxii2client import Collection
 from math import ceil
 
+from treelib import Tree, Node
+
 from insight.common.utils import dispatch, aleph_rpc
 from insight.models import Sample
 from insight.config.constants import MA_ENTERPRISE_TAXII_URL, DEFAULT_PAGE_SIZE
@@ -15,7 +17,7 @@ mod = Blueprint('samples', __name__, url_prefix='/samples')
 @mod.route('/')
 @mod.route('/list')
 @mod.route('/list/<int:page>')
-def list(page=1):
+def index(page=1):
 
     if page < 1:
         abort(404)
@@ -42,6 +44,70 @@ def download(sample_id):
     data = decode_data(result)
 
     return send_file(BytesIO(data), as_attachment=True, attachment_filename='%s.sample' % sample_id)
+
+def traverse_tree(sample_id, nodes_visited = None):
+
+    if not nodes_visited:
+        nodes_visited = set()
+        nodes_visited.add(sample_id)
+
+    children = current_app.datastore.get_children(sample_id)
+    parents = current_app.datastore.get_parents(sample_id)
+
+    for c in children:
+        yield [sample_id, c['_id']]
+        if c['_id'] not in nodes_visited:
+            nodes_visited.add(c['_id'])
+            yield from traverse_tree(c['_id'], nodes_visited)
+
+    for p in parents:
+        yield [p, sample_id]
+        if p not in nodes_visited:
+            nodes_visited.add(p)
+            yield from traverse_tree(p, nodes_visited)
+
+@mod.route('/universe/<sample_id>')
+def universe(sample_id):
+
+    sample = current_app.datastore.get(sample_id)
+
+    if not sample:
+        abort(404)
+
+    entities = set()
+    connections = []
+    entity_info = {}
+
+    parent_table = {}
+
+    for i in traverse_tree(sample_id):
+
+        parent_entity = i[0]
+        child_entity = i[1]
+
+        if child_entity in parent_table.keys():
+            parent_table[child_entity].append(parent_entity)
+            parent_table[child_entity] = [parent_entity,]
+
+        entities.add(parent_entity)
+        entities.add(child_entity)
+
+        connections.append(i)
+
+    tree = {
+        'entities': list(entities),
+        'connections': connections
+    }
+
+    ei = current_app.datastore.mget(list(entities))
+    locations = set()
+
+    for e in ei:
+        entity_info[e.id] = e
+        if e.metadata['filetype'] == 'meta/location':
+            locations.add(e)
+
+    return render_template('samples/universe.html', sample=sample, tree=tree, entity_info=entity_info, locations=locations)
 
 @mod.route('/view/<sample_id>')
 def view(sample_id):

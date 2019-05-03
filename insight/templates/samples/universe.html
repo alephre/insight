@@ -1,0 +1,214 @@
+{% extends 'layout.html' %}
+{% block css -%}
+<style>
+.links line {
+  stroke: #999;
+  stroke-opacity: 0.6;
+}
+
+.nodes circle {
+  stroke: #fff;
+  stroke-width: 1.5px;
+    cursor: pointer;
+}
+
+text {
+    fill: #FFF;
+    font-family: sans-serif;
+}
+.nodes text {
+  font-family: sans-serif;
+  font-size: 14px;
+  opacity: 0.1;
+}
+text:hover {
+}
+</style>
+{% endblock -%}
+{% block javascript -%}
+<script type="text/javascript" src="{{ url_for('static', filename='plugins/d3js/d3.v4.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+<script type="text/javascript">
+    // Create Nodes array
+    var graph_nodes = [
+{% for e in tree.entities -%}
+    {id: '{{ entity_info[e].screen_name }}', 'internal': '{{ entity_info[e].id }}', label: '{{ entity_info[e].filename }}', group: '{{ entity_info[e].filetype }}' },
+{% endfor -%}
+];
+    // Create Links array
+    var graph_links = [
+{% for c in tree.connections -%}
+    {source: '{{ entity_info[c.0].screen_name }}', target: '{{ entity_info[c.1].screen_name }}', value: 1},
+{% endfor -%}
+];
+
+var url_sample_base = "/samples/view/";
+
+var svg_object = document.getElementById('universe_map');
+var svg = d3.select("svg"),
+    width = +svg_object.parentNode.offsetWidth,
+    height = +svg.attr("height");
+
+
+var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+
+svg.append("g")
+  .attr("class", "legendOrdinal")
+  .attr("transform", "translate(20,20)");
+
+var ordinal = d3.scaleOrdinal()
+    .domain([ {% for e in tree.entities -%}'{{ entity_info[e].filetype }}',{% endfor -%}])
+    .range(color);
+
+var legendOrdinal = d3.legendColor()
+  .shape("path", d3.symbol().type(d3.symbolTriangle).size(150)())
+  .shapePadding(10)
+  .cellFilter(function(d){ return d.label !== "e" })
+  .scale(color);
+
+var simulation = d3.forceSimulation()
+    .force("link", d3.forceLink().id(function(d) { return d.id; }))
+    .force("charge", d3.forceManyBody().strength(-100))
+    .force("center", d3.forceCenter(width / 2, height / 2));
+
+var g = svg.append("g")
+    .attr("class", "everything");
+
+  var link = g.append("g")
+      .attr("class", "links")
+    .selectAll("line")
+    .data(graph_links)
+    .enter().append("line")
+      .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+  var node = g.append("g")
+      .attr("class", "nodes")
+    .selectAll("g")
+    .data(graph_nodes)
+    .enter().append("g")
+    
+  var circles = node.append("g")
+      .append("a")
+      .attr("xlink:href", function (d) {
+        return url_sample_base+d.internal
+        })
+      .append("circle")
+      .attr("r", 6)
+      .attr("fill", function(d) { return color(d.group); })
+      .call(d3.drag()
+          .on("start", dragstarted)
+          .on("drag", dragged)
+          .on("end", dragended));
+
+  var labels = node.append("text")
+      .text(function(d) {
+        return;
+        return d.label;
+      })
+      .attr('x', 10)
+      .attr('y', 4);
+
+    // ZOOM START
+//add zoom capabilities 
+var zoom_handler = d3.zoom()
+    .on("zoom", zoom_actions);
+
+zoom_handler(svg);     
+
+//Zoom functions 
+function zoom_actions(){
+    g.attr("transform", d3.event.transform)
+}
+
+    // ZOOM END
+
+  node.append("title")
+      .text(function(d) { return d.id; });
+
+  simulation
+      .nodes(graph_nodes)
+      .on("tick", ticked);
+
+  simulation.force("link")
+      .links(graph_links);
+
+svg.select(".legendOrdinal")
+  .call(legendOrdinal);
+          
+
+  function ticked() {
+    link
+        .attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node
+        .attr("transform", function(d) {
+          return "translate(" + d.x + "," + d.y + ")";
+        })
+  }
+
+function dragstarted(d) {
+  if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x;
+  d.fy = d.y;
+}
+
+function dragged(d) {
+  d.fx = d3.event.x;
+  d.fy = d3.event.y;
+}
+
+function dragended(d) {
+  if (!d3.event.active) simulation.alphaTarget(0);
+  d.fx = null;
+  d.fy = null;
+}
+</script>
+
+    <!-- Leaftlet Maps -->
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
+      integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+      crossorigin=""></script>
+
+    <script>
+    var all_latlng = [
+{% for l in locations -%}
+{% set coords = l.metadata['artifacts']['location']['geo_coordinates'] -%}
+        [ {{ coords['latitude'] }}, {{ coords['longitude'] }}],
+{% endfor -%}
+    ];
+    var map = L.map('mapid').setView(all_latlng[0], 10);
+    var bounds = new L.LatLngBounds(all_latlng);
+
+    // Attribution
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    // Markers
+{% for l in locations -%}
+{% set locinfo = l.metadata['artifacts']['location'] -%}
+{% set coords = locinfo['geo_coordinates'] -%}
+L.marker([{{ coords['latitude'] }}, {{ coords['longitude'] }}]).addTo(map)
+    .bindPopup("{{ locinfo.city }}, {{ locinfo.state }} ({{ locinfo.country }})");
+{% endfor -%}
+    map.fitBounds(bounds);
+    </script>
+{% endblock -%}
+{% block title %}Sample Report {{ sample._id|truncate(255, True) }}{% endblock %}
+{% block body %}
+{{ bootstrap.block_header('Sample universe') }}
+
+<div class="row">
+
+    <div class="col-lg-12 col-md-12">
+        <svg id="universe_map" width="100%" height="700"></svg>
+    </div><!-- .col -->
+
+</div><!-- .row -->
+
+    {% include 'samples/widgets/geolocation.html' -%}
+
+{% endblock %}

@@ -1,3 +1,4 @@
+from werkzeug.contrib.cache import SimpleCache
 from collections import OrderedDict
 from elasticsearch import Elasticsearch as ES, NotFoundError
 
@@ -10,10 +11,12 @@ class Elasticsearch(Datastore):
     index = 'aleph-samples'
     tracking_index = 'aleph-tracking'
     doc_type = 'sample'
+    cache = None
 
     def __init__(self):
 
         self.engine = ES()
+        self.cache = SimpleCache()
 
     def all(self, page=1, size=DEFAULT_PAGE_SIZE):
 
@@ -59,6 +62,9 @@ class Elasticsearch(Datastore):
         if not index:
             index = self.index
 
+        if not isinstance(ids, list):
+            raise ValueError("ids is not a list")
+
         body = { 'ids': ids }
 
         result = self.engine.mget(index=index, doc_type=self.doc_type, body=body, ignore=404)
@@ -81,6 +87,21 @@ class Elasticsearch(Datastore):
 
         return OrderedDict(sorted(result.items()))
 
+    def mget(self, sample_ids):
+
+        metadata = {s['_id']:s for s in self._mget(sample_ids)}
+        tracking_data = {s['_id']:s for s in self._mget(sample_ids, index=self.tracking_index)}
+
+        if not metadata or not tracking_data:
+            return None
+
+        entries = []
+
+        for sample_id, v in metadata.items():
+            entries.append(Sample(metadata[sample_id], tracking_data[sample_id]))
+
+        return entries
+
     def get(self, sample_id):
 
         metadata = self._get(sample_id)
@@ -91,12 +112,52 @@ class Elasticsearch(Datastore):
 
         return Sample(metadata, tracking_data)
 
-    def raw_search(self, body, q=None, start=0, size=DEFAULT_PAGE_SIZE):
+    def get_parents(self, sample_id):
+
+        rv = self.cache.get('get-parents-%s' % sample_id)
+
+        if not rv:
+            
+            tracking_data = self._get(sample_id, index=self.tracking_index)
+
+            if not tracking_data:
+                return []
+
+            rv = tracking_data['_source']['parents']
+
+        return rv
+
+    def get_children(self, sample_id):
+
+        rv = self.cache.get('get-children-%s' % sample_id)
+
+        if not rv:
+
+            search_body = {
+                "query": {
+                    "bool": {
+                        "must": [
+                            { "term": { "parents": sample_id } }
+                        ]
+                    }
+                }
+            }
+
+            result = self.raw_search(search_body, index=self.tracking_index)
+
+            rv = result['hits']['hits']
+
+        return rv
+
+    def raw_search(self, body, q=None, start=0, size=DEFAULT_PAGE_SIZE, index=None):
+
+        if not index:
+            index = self.index
 
         result = []
 
         try:
-            hits = self.engine.search(index=self.index, doc_type=self.doc_type, q=q, from_=start, size=size, body=body)
+            hits = self.engine.search(index=index, doc_type=self.doc_type, q=q, from_=start, size=size, body=body)
         except NotFoundError:
             pass
         except Exception:
@@ -194,7 +255,7 @@ class Elasticsearch(Datastore):
         div_body = {
             "aggs" : {
                 "genres" : {
-                    "terms" : { "field" : "mimetype" }
+                    "terms" : { "field" : "filetype" }
                 }
             }
         }

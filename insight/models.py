@@ -41,7 +41,6 @@ class Sample(object):
         return len(tactics)
 
         
-
     def total_artifacts(self):
 
         count = 0
@@ -61,6 +60,18 @@ class Sample(object):
                     total_evil += flag['evil_rating']
 
         return total_evil
+
+    @property
+    def filename(self):
+        return self.tracking_data['known_filenames'][0]
+
+    @property
+    def filetype(self):
+        return self.metadata['filetype']
+
+    @property
+    def screen_name(self):
+        return "%s [%s]" % (self.filename, self.id)
 
 
 class Datastore(object):

@@ -80,6 +80,7 @@
                     {% if sample %}
                     <li class="header">ANALYSIS NAVIGATION</li>
                     {{ bootstrap.nav_item('Overview', url_for('samples.view', sample_id=sample.id), 'info', 'samples.view') }}
+                    {{ bootstrap.nav_item('Universe', url_for('samples.universe', sample_id=sample.id), 'language', 'samples.universe') }}
                     {% if 'artifacts' in sample.metadata.keys() -%}
                     {{ bootstrap.nav_item('Artifacts', url_for('samples.artifacts', sample_id=sample.id), 'fingerprint', 'samples.artifacts', children = sample.metadata.artifacts.keys()) }}
                     {% endif -%}
@@ -89,7 +90,7 @@
                     {% endif %}
                     <li class="header">MAIN NAVIGATION</li>
                     {{ bootstrap.nav_item('Dashboard', url_for('general.index'), 'home', 'general.index') }}
-                    {{ bootstrap.nav_item('Samples', url_for('samples.list'), 'bug_report', 'samples.list') }}
+                    {{ bootstrap.nav_item('Samples', url_for('samples.index'), 'bug_report', 'samples.index') }}
                     {{ bootstrap.nav_item('Submit sample', url_for('samples.submit'), 'cloud_upload', 'samples.submit') }}
                 </ul>
             </div>
