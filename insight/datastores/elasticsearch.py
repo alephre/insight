@@ -20,8 +20,6 @@ class Elasticsearch(Datastore):
 
     def all(self, page=1, size=DEFAULT_PAGE_SIZE):
 
-        entry_table = {}
-
         body = {
                 'query': {
                     'match_all': {},
@@ -37,7 +35,18 @@ class Elasticsearch(Datastore):
 
         res = self.raw_search(body, start=start, size=size)
 
+        total = res['hits']['total']
         entries = res['hits']['hits']
+
+        return (total, self.entries_to_samples(entries))
+
+    def entries_to_samples(self, entries):
+
+        rv = []
+        if not entries:
+            return rv
+
+        entry_table = {}
 
         for entry in entries:
             sample_id = entry['_id']
@@ -50,8 +59,7 @@ class Elasticsearch(Datastore):
             sample_id = td['_id']
             entry_table[sample_id]['tracking_data'] = td
 
-        rv = []
-
+        # Add return values
         for sample_id, sample_data in entry_table.items():
             rv.append(Sample(sample_data['metadata'], sample_data['tracking_data']))
 
@@ -180,8 +188,12 @@ class Elasticsearch(Datastore):
             }
         }
 
-        hits = self.raw_search(body, from_=start, size=size, q=query)
-        return hits['hits']['hits']
+        hits = self.raw_search(body, start=start, size=size, q=query)
+
+        total = hits['hits']['total']
+        entries = hits['hits']['hits']
+
+        return (total, self.entries_to_samples(entries))
 
     def count(self, body):
 

@@ -25,7 +25,11 @@
             <i class="material-icons">search</i>
         </div>
         <form action="{{ url_for('samples.search') }}">
+        {% if 'samples.search' == request.url_rule.endpoint -%}
+            <input type="text" name="q" value="{{ search_query }}" placeholder="START TYPING...">
+        {% else -%}
             <input type="text" name="q" placeholder="START TYPING...">
+        {% endif -%}
         </form>
         <div class="close-search">
             <i class="material-icons">close</i>

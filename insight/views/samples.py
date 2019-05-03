@@ -6,8 +6,6 @@ from stix2 import TAXIICollectionSource, Filter
 from taxii2client import Collection
 from math import ceil
 
-from treelib import Tree, Node
-
 from insight.common.utils import dispatch, aleph_rpc
 from insight.models import Sample
 from insight.cache import cache
@@ -23,12 +21,11 @@ def index(page=1):
     if page < 1:
         abort(404)
 
-    all_samples = current_app.datastore.all(page)
+    total_samples, all_samples = current_app.datastore.all(page)
 
     if page > 1 and len(all_samples) <= 0:
         abort(404)
 
-    total_samples = current_app.datastore.count_all()
     num_pages = ceil(total_samples/DEFAULT_PAGE_SIZE)
     
     return render_template('samples/list.html', samples=all_samples, num_pages=num_pages,page=page)
@@ -204,7 +201,7 @@ def analysis(sample_id):
 
     return render_template('samples/analysis.html', sample = sample, ma_phases=ma_phases, ma_entries=ma_entries, kill_chain=kill_chain_phases, kill_chain_headers=kill_chain_headers)
 
-@mod.route('/samples/submit', methods=['GET','POST'])
+@mod.route('/submit', methods=['GET','POST'])
 def submit():
 
     if request.method == 'POST':
@@ -226,18 +223,23 @@ def submit():
 
     return render_template('samples/submit.html')
 
-@mod.route('/samples/search')
-def search():
+@mod.route('/search')
+@mod.route('/search/<int:page>')
+def search(page = 1):
     
-    #@FIXME return must be already <Sample> and support pagination
     query = request.args.get('q')
 
     if not query:
         return redirect(url_for('samples.list'))
 
-    search_result = [Sample(s) for s in current_app.datastore.search(query)]
+    total_samples, search_result = current_app.datastore.search(query)
 
-    return render_template('samples/list.html', samples = search_result, query=query)
+    if page > 1 and len(search_result) <= 0:
+        abort(404)
+
+    num_pages = ceil(total_samples/DEFAULT_PAGE_SIZE)
+    
+    return render_template('samples/list.html', samples=search_result, num_pages=num_pages,page=page, search_query=query)
 
 # MITRE ATT&CK Functions
 def ma_get_definitions():
