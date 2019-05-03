@@ -167,7 +167,7 @@ function dragended(d) {
   d.fy = null;
 }
 </script>
-
+{% if locations -%}
     <!-- Leaftlet Maps -->
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
       integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
@@ -196,6 +196,7 @@ L.marker([{{ coords['latitude'] }}, {{ coords['longitude'] }}]).addTo(map)
 {% endfor -%}
     map.fitBounds(bounds);
     </script>
+{% endif -%}
 {% endblock -%}
 {% block title %}Sample Report {{ sample._id|truncate(255, True) }}{% endblock %}
 {% block body %}
@@ -209,6 +210,7 @@ L.marker([{{ coords['latitude'] }}, {{ coords['longitude'] }}]).addTo(map)
 
 </div><!-- .row -->
 
+{% with locations=locations -%}
     {% include 'samples/widgets/geolocation.html' -%}
-
+{% endwith -%}
 {% endblock %}

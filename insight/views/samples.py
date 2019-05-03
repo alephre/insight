@@ -10,6 +10,7 @@ from treelib import Tree, Node
 
 from insight.common.utils import dispatch, aleph_rpc
 from insight.models import Sample
+from insight.cache import cache
 from insight.config.constants import MA_ENTERPRISE_TAXII_URL, DEFAULT_PAGE_SIZE
 
 mod = Blueprint('samples', __name__, url_prefix='/samples')
@@ -34,6 +35,7 @@ def index(page=1):
 
 
 @mod.route('/download/<sample_id>')
+@cache.cached()
 def download(sample_id):
 
     result = aleph_rpc('aleph.storages.tasks.retrieve', args=[sample_id], queue='store')
@@ -67,6 +69,7 @@ def traverse_tree(sample_id, nodes_visited = None):
             yield from traverse_tree(p, nodes_visited)
 
 @mod.route('/universe/<sample_id>')
+@cache.cached()
 def universe(sample_id):
 
     sample = current_app.datastore.get(sample_id)
@@ -110,6 +113,7 @@ def universe(sample_id):
     return render_template('samples/universe.html', sample=sample, tree=tree, entity_info=entity_info, locations=locations)
 
 @mod.route('/view/<sample_id>')
+@cache.cached(60)
 def view(sample_id):
 
     sample = current_app.datastore.get(sample_id)
@@ -145,6 +149,7 @@ def view(sample_id):
     return render_template('samples/view.html', sample = sample, threat_analysis = threat_analysis, suspicious_flags = suspicious_flags, ma_entries=ma_entries)
 
 @mod.route('/artifacts/<sample_id>')
+@cache.cached()
 def artifacts(sample_id):
 
     sample = current_app.datastore.get(sample_id)
@@ -155,6 +160,7 @@ def artifacts(sample_id):
     return render_template('samples/artifacts.html', sample = sample)
 
 @mod.route('/analysis/<sample_id>')
+@cache.cached()
 def analysis(sample_id):
 
     sample = current_app.datastore.get(sample_id)

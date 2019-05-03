@@ -6,18 +6,16 @@ from slugify import slugify
 from insight.config import settings
 from insight.datastores.elasticsearch import Elasticsearch
 from insight.views import *
+from insight.cache import cache
 
 def create_app():
 
     app = Flask(__name__)
 
+
     # Patch config
     app.config['SECRET_KEY'] = settings.get('secret_key')
     app.config['DEBUG'] = settings.get('debug')
-
-    # Initialize flask extensions
-    #cache.init_app(app)
-    #mail.init_app(app)
 
     # Add blueprints
     app.register_blueprint(general.mod)
@@ -31,6 +29,7 @@ def create_app():
 
     # Register extensions
     app.datastore = Elasticsearch()
+    cache.init_app(app, config={'CACHE_TYPE': 'simple'})
 
     # Register Custom Filters
     app.jinja_env.filters['slug'] = jinja_filter_format_slugify

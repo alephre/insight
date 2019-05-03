@@ -1,6 +1,6 @@
 celery
 elasticsearch
-flask
+flask-caching
 pip-chill
 python-slugify
 pyyaml
