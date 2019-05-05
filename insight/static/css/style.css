@@ -8092,6 +8092,7 @@ fieldset[disabled] .form-control {
     width: 100%;
     font-size: 16px;
     padding: 25px 60px 23px 56px;
+    color: #000;
     border: none; }
 
 /* Jquery DataTable ============================ */
@@ -8272,3 +8273,57 @@ table.mitre-attack-table tbody td ul li {
     padding: 5px;
     font-size: 0.8em;
 }
+
+/** No More Tables **/
+@media only screen and (max-width: 800px) {
+    
+    /* Force table to not be like tables anymore */
+    .no-more-tables table, 
+    .no-more-tables thead, 
+    .no-more-tables tbody, 
+    .no-more-tables th, 
+    .no-more-tables td, 
+    .no-more-tables tr { 
+        display: block; 
+        float: none;
+        clear: both;
+    }
+ 
+    /* Hide table headers (but not display: none;, for accessibility) */
+    .no-more-tables thead tr { 
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+ 
+    .no-more-tables tr { border: 1px solid #ccc; }
+ 
+    .no-more-tables td { 
+        /* Behave  like a "row" */
+        border: none;
+        border-bottom: 1px solid #eee; 
+        position: relative;
+        padding-left: 22% !important; 
+        white-space: normal;
+        text-align:left;
+    }
+ 
+    .no-more-tables td:before { 
+        /* Now like a table header */
+        position: absolute;
+        /* Top/left values mimic padding */
+        top: 6px;
+        left: 6px;
+        width: 20% !important; 
+        padding-right: 10px; 
+        white-space: nowrap;
+        text-align:left;
+        font-weight: bold;
+    }
+ 
+    /*
+    Label the data
+    */
+    .no-more-tables td:before { content: attr(data-title); }
+}
+        

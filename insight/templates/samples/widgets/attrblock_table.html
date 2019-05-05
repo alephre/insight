@@ -2,15 +2,15 @@
 {{ bootstrap.table_open(head_values=value[0].keys()) }}
     {% for v in value -%}
     <tr>
-        {% for _v in v.values() -%}
+        {% for k,_v in v.items() -%}
         {% if _v|is_list -%}
-        <td>
+        <td data-title="{{ k|fromkey }}">
         {% with value=_v -%}
             {% include 'samples/widgets/attrblock_iterable.html' -%}
         {% endwith -%}
         </td>
         {% else -%}
-        <td>{{ _v }}</td>
+        <td data-title="{{ k|fromkey }}">{{ _v }}</td>
         {% endif -%}
         {% endfor -%}
     </tr>

@@ -13,15 +13,15 @@ def index():
     # Check celery status
     stack_status = check_celery_status()
 
+    # Latest samples
+    total_samples, latest_samples = current_app.datastore.all()
     # Counters
     counters = {
         'processing': current_app.datastore.count_processing_samples(),
         'analyzing': current_app.datastore.count_analyzing_samples(),
-        'all': current_app.datastore.count_all(),
+        'all': total_samples,
     }
 
-    # Latest samples
-    latest_samples = current_app.datastore.all()
 
     # Graphs
     div = current_app.datastore.sample_diversity()
