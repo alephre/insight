@@ -82,7 +82,7 @@
 
 {% macro table_open(classes = [], head_values = [], small_header=False) -%}
 <div class="table-responsive no-more-tables">
-    <table class="table {{ classes|join(' ') }}">
+    <table class="table data-table {{ classes|join(' ') }}">
         <thead class="">
         <tr>
         {% for hv in head_values -%}

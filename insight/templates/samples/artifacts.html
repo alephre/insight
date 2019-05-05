@@ -1,5 +1,17 @@
 {% extends 'layout.html' %}
 {% block title %}Sample Report {{ sample_id|truncate(255, True) }}{% endblock %}
+{% block css -%}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap4.min.css') }}">
+{% endblock -%}
+{% block javascript -%}
+<script type="text/javascript" language="javascript" src="{{ url_for('static', filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.data-table').DataTable();
+} );
+</script>
+{% endblock -%}
 {% block body %}
 {{ bootstrap.block_header('Artifacts') }}
           {% for artifact, values in sample.metadata.artifacts.items() %}
