@@ -1,3 +1,6 @@
+{% if samples|count == 0 %}
+    <p>No samples were found. You can also <a href="{{ url_for('samples.submit') }}">submit your own</a>.</p>
+{% else -%}
         {{ bootstrap.card_open() }}
             {{ bootstrap.table_open(classes=['table-hover'], head_values=['Timestamp','Name','Filetype','Evil Rating','Status','']) }}
                     {% for sample in samples %}
@@ -12,3 +15,4 @@
                     {% endfor %}
             {{ bootstrap.table_close() }}
         {{ bootstrap.card_close() }}
+{% endif -%}

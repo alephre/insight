@@ -61,7 +61,8 @@ class Elasticsearch(Datastore):
 
         # Add return values
         for sample_id, sample_data in entry_table.items():
-            rv.append(Sample(sample_data['metadata'], sample_data['tracking_data']))
+            if '_source' in sample_data['metadata'] and '_source' in sample_data['tracking_data']:
+                rv.append(Sample(sample_data['metadata'], sample_data['tracking_data']))
 
         return rv
 

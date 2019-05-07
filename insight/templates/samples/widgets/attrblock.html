@@ -1,9 +1,16 @@
+{% if values|is_list -%}
+    {% for v in values -%}
+        {% with key=key, values=v -%}
+            {% include 'samples/widgets/attrblock.html' -%}
+        {% endwith -%}
+    {% endfor -%}
+{% else -%}
 {% for k,v in values.items() -%}
 {% if v is mapping %}
     {% with key=k, value=v -%}
         {% include 'samples/widgets/attrblock_mapping.html' -%}
     {% endwith -%}
-{% elif v is iterable and v is not string %}
+{% elif v|is_list %}
 <div class="panel-group" id="accordion_{{ k }}" role="tablist" aria-multiselectable="true">
     {% with key=k, value=v -%}
         {% include 'samples/widgets/attrblock_iterable.html' -%}
@@ -15,3 +22,4 @@
     {% endwith -%}
 {% endif -%}
 {% endfor -%}
+{% endif -%}

@@ -85,11 +85,12 @@
                     <li class="header">ANALYSIS NAVIGATION</li>
                     {{ bootstrap.nav_item('Overview', url_for('samples.view', sample_id=sample.id), 'info', 'samples.view') }}
                     {{ bootstrap.nav_item('Universe', url_for('samples.universe', sample_id=sample.id), 'language', 'samples.universe') }}
-                    {% if 'artifacts' in sample.metadata.keys() -%}
-                    {{ bootstrap.nav_item('Artifacts', url_for('samples.artifacts', sample_id=sample.id), 'fingerprint', 'samples.artifacts', children = sample.metadata.artifacts.keys()) }}
-                    {% endif -%}
+                    {{ bootstrap.nav_item('IOCs', url_for('samples.iocs', sample_id=sample.id), 'assignment_late', 'samples.iocs') }}
                     {% if 'flags' in sample.metadata.keys() -%}
                     {{ bootstrap.nav_item('Intelligence', url_for('samples.analysis', sample_id=sample.id), 'lightbulb_outline', 'samples.analysis', children = sample.metadata.flags.keys()) }}
+                    {% endif -%}
+                    {% if 'artifacts' in sample.metadata.keys() -%}
+                    {{ bootstrap.nav_item('Artifacts', url_for('samples.artifacts', sample_id=sample.id), 'fingerprint', 'samples.artifacts', children = sample.metadata.artifacts.keys()) }}
                     {% endif -%}
                     {% endif %}
                     <li class="header">MAIN NAVIGATION</li>
