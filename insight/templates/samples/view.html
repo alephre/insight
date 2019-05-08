@@ -19,7 +19,7 @@
 {{ bootstrap.infobox('Mitre Att&ck Tactics'|upper,sample.total_mitre_attack_tactics(),icon_name='lightbulb', count_to=True) }}
 </div><!-- .row -->
 
-{{ bootstrap.block_header('Threat analysis') }}
+{{ bootstrap.block_header('Threat analysis', all_url=url_for('samples.analysis', sample_id=sample.id)) }}
 <div class="row">
     <!-- Threat Analysis -->
     <div class="col-md-12">
@@ -46,7 +46,7 @@
     </div><!-- .col -->
     <!-- /Threat Analysis -->
 </div><!-- .row -->
-{{ bootstrap.block_header('High severity flags') }}
+{{ bootstrap.block_header('High severity flags', all_url=url_for('samples.analysis', sample_id=sample.id)) }}
 <div class="row spaced">
     <!-- Flags -->
     <div class="col-md-12">
@@ -62,7 +62,7 @@
     </div><!-- .col -->
 </div><!-- .row -->
 
-{{ bootstrap.block_header('Pipeline information') }}
+{{ bootstrap.block_header('Processing information') }}
 <div class="row">
     <!-- Processors -->
     <div class="col-md-6 col-sm-12 mb-4">

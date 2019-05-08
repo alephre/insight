@@ -1,6 +1,11 @@
-{% macro block_header(text) -%}
-<div class="block-header mt-4">
-    <h2>{{ text|upper }}</h2>
+{% macro block_header(text, all_url=None, all_color='primary', all_text='View all') -%}
+<div class="row block-header mt-4">
+    <h2 class="col-md-10">{{ text|upper }}</h2>
+    {% if all_url -%}
+    <div class="col-md-2 text-right">
+    <a href="{{ all_url }}"><button class="btn btn-{{ all_color }} btn-sm" type="button">{{ all_text }}</button></a>
+    </div>
+    {% endif -%}
 </div>
 {% endmacro -%}
 

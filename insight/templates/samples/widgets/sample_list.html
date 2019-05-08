@@ -21,7 +21,7 @@
                                 <i class="bg-{{ status_colors[sample.status] }}"></i> {{ sample.status }}
                             </span>
                         </td>
-                        <td data-title=""><a href="{{ url_for('samples.view', sample_id=sample.id) }}" role="button" class="btn btn-primary btn-block">View</a></td>
+                        <td data-title=""><a href="{{ url_for('samples.view', sample_id=sample.id) }}" role="button" class="btn btn-primary btn-sm btn-block">View</a></td>
                     </tr>
                     {% endfor %}
             {{ bootstrap.table_close() }}

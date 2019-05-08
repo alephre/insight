@@ -93,27 +93,27 @@
         <!-- Navigation -->
         <ul class="navbar-nav mb-md-3">
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('samples.view', sample_id=sample.id) }}">
+            <a class="nav-link{% if request.url_rule.endpoint == 'samples.view' %} active{% endif %}" href="{{ url_for('samples.view', sample_id=sample.id) }}">
               <i class="ni ni-app"></i> Overview
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('samples.universe', sample_id=sample.id) }}">
+            <a class="nav-link{% if request.url_rule.endpoint == 'samples.universe' %} active{% endif %}" href="{{ url_for('samples.universe', sample_id=sample.id) }}">
               <i class="ni ni-planet"></i> Universe
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('samples.iocs', sample_id=sample.id) }}">
+            <a class="nav-link{% if request.url_rule.endpoint == 'samples.iocs' %} active{% endif %}" href="{{ url_for('samples.iocs', sample_id=sample.id) }}">
               <i class="ni ni-compass-04"></i> IOCs
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('samples.artifacts', sample_id=sample.id) }}">
+            <a class="nav-link{% if request.url_rule.endpoint == 'samples.artifacts' %} active{% endif %}" href="{{ url_for('samples.artifacts', sample_id=sample.id) }}">
               <i class="fa fa-fingerprint"></i> Artifacts
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('samples.analysis', sample_id=sample.id) }}">
+            <a class="nav-link{% if request.url_rule.endpoint == 'samples.analysis' %} active{% endif %}" href="{{ url_for('samples.analysis', sample_id=sample.id) }}">
               <i class="fa fa-flag"></i> Analysis
             </a>
           </li>
@@ -124,17 +124,17 @@
         <!-- Navigation -->
         <ul class="navbar-nav">
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('general.index') }}">
+            <a class="nav-link{% if request.url_rule.endpoint == 'general.index' %} active{% endif %}" href="{{ url_for('general.index') }}">
               <i class="ni ni-tv-2 text-primary"></i> Dashboard
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('samples.index') }}">
+            <a class="nav-link{% if request.url_rule.endpoint == 'samples.index' %} active{% endif %}" href="{{ url_for('samples.index') }}">
               <i class="fa fa-bug text-blue"></i> Samples
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('samples.submit') }}">
+            <a class="nav-link{% if request.url_rule.endpoint == 'samples.submit' %} active{% endif %}" href="{{ url_for('samples.submit') }}">
               <i class="ni ni-cloud-upload-96 text-blue"></i> Submit a sample
             </a>
           </li>
