@@ -1,5 +1,5 @@
 {% if value|count > 0 %}
-<h4>{{ key|fromkey }}</h4>
+<h4 class="text-uppercase mb-2 mt-2">{{ key|fromkey }}</h4>
 <div class="panel-group" id="accordion_{{ k }}" role="tablist" aria-multiselectable="true">
 {% for _k, _v in value.items() -%}
     {% if _v|is_list -%}

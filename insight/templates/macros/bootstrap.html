@@ -1,5 +1,5 @@
 {% macro block_header(text, all_url=None, all_color='primary', all_text='View all') -%}
-<div class="row block-header mt-4">
+<div class="row block-header mt-5">
     <h2 class="col-md-10 col-9">{{ text|upper }}</h2>
     {% if all_url -%}
     <div class="col-md-2 col-3 text-right">
@@ -105,7 +105,7 @@
 {% endmacro -%}
 
 {% macro table_open(classes = [], head_values = [], small_header=False) -%}
-<div class="table-responsive no-more-tables">
+<div class="table-responsive no-more-tables mb-4">
     <table class="table data-table {{ classes|join(' ') }}">
         <thead class="thead-light">
         <tr>
@@ -130,7 +130,7 @@
 {% macro form_field_dropzone(title='Drop files here or click to upload.', smalltext='Files will be automatically queued and uploaded as you select/drop them in the box.') -%}
 <div class="dz-message">
     <div class="drag-icon-cph">
-        {{ icon('touch_app') }}
+        {{ icon('upload') }}
     </div><!-- .icon -->
     <h3>{{ title }}</h3>
     <small>{{ smalltext }}</small>

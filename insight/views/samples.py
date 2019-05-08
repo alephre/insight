@@ -206,7 +206,6 @@ def analysis(sample_id):
         for flag in f_flags:
             for ma in flag['mitre_attack_id']:
                 for phase, ids in ma_phases.items():
-                    print(phase)
                     kp = kill_chain_phases[phase]
                     if ma in ids:
                         if not ma in kp.keys():
@@ -230,9 +229,8 @@ def submit():
         # if user does not select file, browser also
         # submit an empty part without filename
         for key, file in files.items():
-            print(file)
             if file.filename == '':
-                flash('No selected file', 'error')
+                flash('No selected file', 'warning')
                 return redirect(request.url)
             if file:
                 filename = secure_filename(file.filename)    
