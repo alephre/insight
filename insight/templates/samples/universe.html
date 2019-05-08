@@ -1,6 +1,12 @@
 {% extends 'layout.html' %}
 {% block css -%}
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+       crossorigin=""/>
 <style>
+
+#mapid { height: 500px; }
+
 .links line {
   stroke: #999;
   stroke-opacity: 0.6;
@@ -178,8 +184,8 @@ $(function () {
 </script>
 {% if locations -%}
     <!-- Leaftlet Maps -->
-    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
-      integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
+<script src="https://unpkg.com/leaflet@1.5.0/dist/leaflet.js"
+   integrity="sha512-3Wcxp7F9bV2pl+MBgrL6Pz7AJASLpemmQPIiPA0lDs3ImF0z4JuuMIBPeirLbgIuhfH2gJyGWZjvm6M+Zr7L6Q=="
       crossorigin=""></script>
 
     <script>
