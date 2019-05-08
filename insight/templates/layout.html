@@ -6,16 +6,29 @@
 {% include 'layout/head.html' -%}
 {% endwith -%}
 
-    <body class="theme-deep-purple">
+    <body>
 
     {% with parent=self -%}
         {% include 'layout/nav.html' with context -%}
     {% endwith -%}
-   <section class="content">
-        <div class="container-fluid">
+   <section class="main-content">
+    {% with parent=self -%}
+        {% include 'layout/topnav.html' with context -%}
+    {% endwith -%}
+        <!-- Page Header home-8/9 sample-6/6-->
+    <div class="header bg-gradient-primary pb-{% if sample %}5{% else %}8{% endif %} pt-5 pt-md-8">
+      <div class="container-fluid">
+        <div class="header-body">
+        {% block header -%}{% endblock -%}
+        </div><!-- .header-body -->
+      </div><!-- .container-fluid -->
+    </div><!-- header -->
+        <!-- Page Content -->
+        <div class="container-fluid mt--{% if sample %}5{% else %}9{% endif %}">
         {% include 'layout/alerts.html' -%}
         {% block body -%}{% endblock -%}
-
+        
+        {% include 'layout/footer.html' -%}
        </div>
     </section>
         {% include 'layout/scripts.html' -%}

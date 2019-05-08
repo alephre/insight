@@ -1,30 +1,31 @@
 {% extends 'layout.html' -%}
 {% block title -%}Dashboard{% endblock -%}
+{% block header -%}
+<div class="row mb-4">
+{{ bootstrap.infobox('Total samples'|upper,counters.all,icon_name='bug', color='teal') }}
+{{ bootstrap.infobox('Processing samples'|upper,counters.processing,icon_name='fingerprint', color='cyan') }}
+{{ bootstrap.infobox('Analyzing samples'|upper,counters.analyzing,icon_name='lightbulb', color='blue') }}
+{% if stack_status -%}
+{% set stack_health_text = 'Healthy' -%}
+{% set stack_health_color = 'success' -%}
+{% else -%}
+{% set stack_health_text = 'Offlline' -%}
+{% set stack_health_color = 'warning' -%}
+{% endif -%}
+{{ bootstrap.infobox('Pipeline health'|upper, stack_health_text,icon_name='heart', color=stack_health_color) }}
+</div><!-- .row -->
+{% endblock -%}
 {% block body -%}
 {{ bootstrap.block_header('Dashboard') }}
 
-<div class="row">
-{{ bootstrap.infobox('Total samples'|upper,counters.all,icon_name='bug_report', color='teal') }}
-{{ bootstrap.infobox('Processing samples'|upper,counters.processing,icon_name='fingerprint', color='cyan') }}
-{{ bootstrap.infobox('Analyzing samples'|upper,counters.analyzing,icon_name='lightbulb_outline', color='blue') }}
-{% if stack_status -%}
-{% set stack_health_text = 'Healthy' -%}
-{% set stack_health_color = 'light-green' -%}
-{% else -%}
-{% set stack_health_text = 'Offlline' -%}
-{% set stack_health_color = 'red' -%}
-{% endif -%}
-{{ bootstrap.infobox('Pipeline health'|upper, stack_health_text,icon_name='local_hospital', color=stack_health_color) }}
-</div><!-- .row -->
-
 <div id="bigChart" class="row">
     <div class="col-lg-9 col-md-12">
-{{ bootstrap.card_open(header='Pipeline Histogram'|upper) }}
+{{ bootstrap.card_open(header='Sample quantity over time', classes=['bg-gradient-default'], dark=True, sub_header='Histogram'|upper) }}
 {{ bootstrap.chart('histogram_chart', height=80) }}
 {{ bootstrap.card_close() }}
     </div><!-- .col -->
     <div class="col-lg-3 col-md-12">
-{{ bootstrap.card_open(header='Pipeline Diversity'|upper) }}
+{{ bootstrap.card_open(header='Samples per type', sub_header='Diversity'|upper) }}
 {{ bootstrap.chart('diversity_chart', height=280) }}
 {{ bootstrap.card_close() }}
     </div><!-- .col -->
@@ -40,9 +41,21 @@
 {% endblock -%}
 {% block javascript -%}
     <!-- Chart Plugins Js -->
-    <script src='{{ url_for('static', filename='plugins/chartjs/Chart.bundle.js') }}'></script>
+    <script src='{{ url_for('static', filename='vendor/chart.js/dist/Chart.min.js') }}'></script>
+    <script src='{{ url_for('static', filename='vendor/chart.js/dist/Chart.extension.js') }}'></script>
     <script>
 $(function () {
+
+window.chartColors = {
+    red: 'rgb(255, 99, 132)',
+    orange: 'rgb(255, 159, 64)',
+    yellow: 'rgb(255, 205, 86)',
+    green: 'rgb(75, 192, 192)',
+    blue: 'rgb(54, 162, 235)',
+    purple: 'rgb(153, 102, 255)',
+    grey: 'rgb(201, 203, 207)'
+};
+
 
     var histogram_config = {
             type: 'bar',
@@ -51,7 +64,7 @@ $(function () {
                 datasets: [{
                     label: "Samples processed",
                     data: [{{ histogram.data|join(',') }}],
-                    backgroundColor: 'rgba(0, 188, 212, 0.8)'
+                    backgroundColor: window.chartColors.blue
                 }]
             },
             options: {
@@ -68,17 +81,20 @@ $(function () {
                 datasets: [{
                     data: [{{ diversity.data|join(',') }}],
                     backgroundColor: [
-                        "rgb(233, 30, 99)",
-                        "rgb(255, 193, 7)",
-                        "rgb(0, 188, 212)",
-                        "rgb(139, 195, 74)"
+                        window.chartColors.red,
+                        window.chartColors.orange,
+                        window.chartColors.yellow,
+                        window.chartColors.green,
+                        window.chartColors.blue,
+                        window.chartColors.purple,
+                        window.chartColors.grey,
                     ],
                 }],
                 labels: {{ diversity.labels|tojson() }},
             },
             options: {
                 responsive: true,
-                legend: true
+                legend: false
             }
         }
 

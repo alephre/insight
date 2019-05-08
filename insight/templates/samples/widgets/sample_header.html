@@ -1,0 +1,23 @@
+<div class="row mb-4">
+    <!-- Basic File Information -->
+    <div class="col-lg-12 col-md-12">
+        {{ bootstrap.card_open() }}
+        <div class="row">
+        <p class="mb-0 text-muted text-sm col-md-8">
+            <span class="mr-2"><strong class="text-uppercase text-muted">Known filenames:</strong></span>
+            <span class="text-nowrap">{{ sample.tracking_data.known_filenames|join(', ') }}</span>
+            <span class="ml-2">({{ sample.metadata.size|filesizeformat }})</span>
+            <br />
+            <span class="mr-2"><strong class="text-uppercase text-muted">Timestamp:</strong></span>
+            <span class="text-nowrap">{{ sample.metadata.timestamp }}</span>
+        </p>
+        <p class="mb-0 text-muted text-sm col-md-4 text-right">
+            <span class="mr-2"><strong class="text-uppercase text-muted">File Type:</strong></span>
+            <span class="text-nowrap">{{ sample.metadata.filetype }}</span>
+            <br />
+            <span class="text-nowrap">{{ sample.metadata.filetype_desc }}</span>
+        </p>
+        </div><!-- .row -->
+        {{ bootstrap.card_close() }}
+    </div><!-- .col -->
+</div><!-- .row -->

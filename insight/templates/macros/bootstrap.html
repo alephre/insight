@@ -1,37 +1,51 @@
 {% macro block_header(text) -%}
-<div class="block-header">
+<div class="block-header mt-4">
     <h2>{{ text|upper }}</h2>
 </div>
 {% endmacro -%}
 
 {% macro icon(icon_name) -%}
-<i class="material-icons">{{ icon_name }}</i>
+<i class="fas fa-{{ icon_name }}"></i>
 {% endmacro -%}
 
 {% macro progress(value, max=255, class='', showPercent=True) -%}
+<div class="d-flex align-items-center">
+{% if showPercent -%}<span class="mr-2">{{ '%.2f'|format((value/max)*100) }}%</span>{% endif -%}
 <div class="progress">
-    <div class="progress-bar {% if value/max > 0.5 -%}bg-red{% else -%}bg-green{% endif -%} {{ class }}" role="progressbar" aria-valuenow="{{ value }}" aria-valuemin="0" aria-valuemax="{{ max }}" style="width: {{ (value/max)*100 }}%">
-    {% if showPercent -%}{{ '%.2f'|format((value/max)*100) }}%{% endif -%}
+    <div class="progress-bar {% if value/max > 0.5 -%}bg-warning{% elif value/max > 0.75 -%}bg-danger{% else -%}bg-success{% endif -%} {{ class }}" role="progressbar" aria-valuenow="{{ value }}" aria-valuemin="0" aria-valuemax="{{ max }}" style="width: {{ (value/max)*100 }}%">
     </div><!-- .progress-bar -->
+</div><!-- .progress -->
+</div><!-- d-flex -->
+{% endmacro -%}
+
+{% macro infobox(title, text, icon_name, class='col-lg-3 col-md-3 col-sm-6 col-xs-12', color='primary', count_to=False, count_decimals=0, count_number=None) -%}
+<div class="{{ class }}">
+    <div class="card card-stats mb-4 mb-xl-0">
+        <div class="card-body">
+            <div class="row">
+                <div class="col">
+                    <h5 class="card-title text-uppercase text-muted mb-0">{{ title }}</h5>
+                    <span class="h2 font-weight-bold mb-0">{{ text }}</span>
+                </div>
+                <div class="col-auto">
+                    <div class="icon icon-shape bg-{{ color }} text-white rounded-circle shadow">
+                        {{ icon(icon_name) }}
+                    </div>
+                </div>
+            </div>
+            {#
+            <p class="mt-3 mb-0 text-muted text-sm">
+                <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
+                <span class="text-nowrap">Since last month</span>
+            </p>
+            #}
+        </div>                
+    </div>
 </div>
 {% endmacro -%}
 
-{% macro infobox(title, text, icon_name, class='col-lg-3 col-md-3 col-sm-6 col-xs-12', color='', count_to=False, count_decimals=0, count_number=None) -%}
-<div class="{{ class }}">
-    <div class="info-box bg-{{ color }}">
-        <div class="icon">
-            {{ icon(icon_name) }}
-        </div>
-        <div class="content">
-            <div class="text">{{ title }}</div>
-            {% if count_to -%}
-            <div class="number count-to" data-from="0" data-to="{% if count_number -%}{{ count_number }}{% else -%}{{ text }}{% endif -%}" data-decimals="{{ count_decimals }}">{{ text }}</div>
-            {% else -%}
-            <div class="number">{{ text }}</div>
-            {% endif -%}
-        </div>
-    </div>
-</div>
+{% macro badge(text, class='') -%}
+<span class="badge {{ class }}">{{ text }}</span>
 {% endmacro -%}
 
 {% macro label(text, class='') -%}
@@ -65,14 +79,19 @@
 {% endif -%}
 {% endmacro -%}
 
-{% macro card_open(classes = ['card-plain'], header = None, subtext = None, header_class='', body_class='') -%}
-<div class="card {{ classes|join(' ') }}">
+{% macro card_open(classes = ['card-plain'], header = None, subtext = None, header_class='', body_class='', sub_header=None, dark=False) -%}
+<div class="card {{ classes|join(' ') }} shadow">
     {% if header -%}
-    <div class="header {{ header_class }}">
-        <h2>{{ header }}{% if subtext %} <small>{{ subtext }}</small>{% endif %}</h2>
-    </div>
+            <div class="card-header border-0 bg-transparent">
+            {% if sub_header -%}
+                <h6 class="text-uppercase {% if dark -%}text-light {% endif -%}ls-1 mb-1">{{ sub_header }}</h6>
+                <h2 class="{% if dark -%}text-white {% endif -%}mb-0">{{ header }}</h2>
+            {% else -%}
+            <h3 class="mb-0">{{ header }}</h3>
+            {% endif -%}
+            </div>
     {% endif -%}
-    <div class="body {{ body_class }}">
+    <div class="card-body {{ body_class }}">
 {% endmacro -%}
 
 {% macro card_close() -%}
@@ -83,11 +102,11 @@
 {% macro table_open(classes = [], head_values = [], small_header=False) -%}
 <div class="table-responsive no-more-tables">
     <table class="table data-table {{ classes|join(' ') }}">
-        <thead class="">
+        <thead class="thead-light">
         <tr>
         {% for hv in head_values -%}
             {% if small_header -%}
-            <th><small>{{ hv|fromkey }}</small></th>
+            <th scope="col"><small>{{ hv|fromkey }}</small></th>
             {% else -%}
             <th>{{ hv|fromkey }}</th>
             {% endif -%}
@@ -127,7 +146,7 @@
         <h4 class="panel-title">
             <a role="button" data-toggle="collapse" href="#panelCollapse_{{ id|slug }}" aria-expanded="true" aria-controls="panelCollapse_{{ id|slug }}">
                 {% if header_icon %}{{ icon(header_icon) }} {% endif -%}{{ header }}
-                {% if label %}{{ label(label_text, class='pull-right') }}{% endif -%}
+                {% if label %}{{ badge(label_text, class='badge-light float-right') }}{% endif -%}
             </a>
         </h4>
     </div><!-- .panel-heading -->
@@ -142,5 +161,5 @@
 {% endmacro -%}
 
 {% macro chart(chart_id, height=150) -%}
-<canvas id="{{ chart_id }}" height="{{ height }}"></canvas>
+<canvas id="{{ chart_id }}" class="chart-canvas" height="{{ height }}"></canvas>
 {% endmacro -%}

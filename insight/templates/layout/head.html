@@ -1,7 +1,9 @@
 <head>
+
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!--<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{{ parent.title() }} | Aleph Insight</title>
     <!-- Favicon-->
     <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
@@ -13,37 +15,9 @@
     <meta name="msapplication-TileColor" content="#673ab7">
     <meta name="msapplication-config" content="/static/favicon/browserconfig.xml">
     <meta name="theme-color" content="#673ab7">
+
+    {% include 'layout/css.html' -%}
     
-
-    <!-- Google Fonts -->
-    <!--<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=latin,cyrillic-ext" rel="stylesheet" type="text/css">-->
-    <!--<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">-->
-    <link href="https://fonts.googleapis.com/css?family=Megrim|Roboto|Open+Sans|Material+Icons" rel="stylesheet">
-
-    <!-- Leaflet Maps -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
-      integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA=="
-      crossorigin=""/>
-
-    <!-- Bootstrap Core Css -->
-    <link href="{{ url_for('static', filename='plugins/bootstrap/css/bootstrap.css') }}" rel="stylesheet">
-
-    <!-- Waves Effect Css -->
-    <link href="{{ url_for('static', filename='plugins/node-waves/waves.css') }}" rel="stylesheet" />
-
-    <!-- Animation Css -->
-    <link href="{{ url_for('static', filename='plugins/animate-css/animate.css') }}" rel="stylesheet" />
-
-    <!-- Morris Chart Css-->
-    <link href="{{ url_for('static', filename='plugins/morrisjs/morris.css') }}" rel="stylesheet" />
-
-    <!-- Dropzone Css -->
-    <link href="{{ url_for('static', filename='plugins/dropzone/dropzone.css') }}" rel="stylesheet">
-
-    <!-- Custom Css -->
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-
-    <link href="{{ url_for('static', filename='css/themes/aleph.css') }}" rel="stylesheet" />
 </head>
 
 

@@ -29,7 +29,8 @@ def create_app():
 
     # Register extensions
     app.datastore = Elasticsearch()
-    cache.init_app(app, config={'CACHE_TYPE': 'simple'})
+    cache_type = 'null' if app.config['DEBUG'] else 'simple'
+    cache.init_app(app, config={'CACHE_TYPE': cache_type})
 
     # Register Custom Filters
     app.jinja_env.filters['slug'] = jinja_filter_format_slugify

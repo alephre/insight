@@ -1,6 +1,6 @@
 <div class="row">
-    <div class="col-lg-12 col-md-12">
-        {{ bootstrap.card_open(header=artifact|replace('_',' ')|fromkey) }}</h2>
+    <div class="col-lg-12 col-md-12 mb-4">
+        {{ bootstrap.card_open(header=artifact|replace('_',' ')|fromkey, sub_header='Processor result') }}</h2>
             {% with values=values -%}
                 {% include 'samples/widgets/attrblock.html' -%}
             {% endwith -%}

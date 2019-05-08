@@ -1,13 +1,21 @@
-<div class="aleph_flag alert {% if flag.severity == 'malicious' %}bg-red{% elif flag.severity == 'suspicious' %}bg-deep-purple{% elif flag.severity == 'uncommon' %}bg-blue-grey{% else %}bg-grey{% endif %}">
+    {{ bootstrap.card_open(classes=['mb-2', 'bg-white']) }}
     <div class="row">
-        <div class="col-md-10 margin-0">
+        <div class="col-md-10">
             <strong>{{ flag.title }}</strong><br />
             {{ flag.text }}
             {% if flag.mitre_attack_id|count > 0 -%}
             <br />
-            {# <strong>MITRE ATT&CK:</strong> #}
+            {% if flag.severity == 'malicious' -%}
+            {% set ma_bg = 'danger' %}
+            {% elif flag.severity == 'suspicious' -%}
+            {% set ma_bg = 'warning' %}
+            {% elif flag.severity == 'uncommon' -%}
+            {% set ma_bg = 'primary' %}
+            {% else -%}
+            {% set ma_bg = 'secondary' %}
+            {% endif -%}
             {% for ma in flag.mitre_attack_id -%}
-            <span class="label label-default">{{ ma_entries[ma].name }} - {{ ma }}</span>
+            <span class="badge badge-{{ ma_bg }}">{{ ma_entries[ma].name }} - {{ ma }}</span>
             {% endfor -%}
             {% endif -%}
             </div>
@@ -16,4 +24,4 @@
             <small>{{ flag.severity|fromkey }}</small>
         </div><!-- .col -->
     </div><!-- .row -->
-</div>
+    {{ bootstrap.card_close() }}

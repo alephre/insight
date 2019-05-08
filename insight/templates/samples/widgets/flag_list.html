@@ -1,4 +1,4 @@
-{{ bootstrap.block_header(analysis|fromkey) }}
+{{ bootstrap.card_open(header=analysis|fromkey, sub_header='Analysis result') }}
 <div class="row">
     <div class="col-lg-12 col-md-12">
         {% for flag in values -%}
@@ -8,4 +8,4 @@
         {% endfor %}
     </div><!-- .col -->
 </div><!-- .row -->
-
+{{ bootstrap.card_close() }}

@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
-{% block title %}Sample Report {{ sample_id|truncate(255, True) }}{% endblock %}
+{% block title %}Analysis | {{ sample.id|truncate(255, True) }}{% endblock %}
+{% block header -%}{% include 'samples/widgets/sample_header.html' with context -%}{% endblock -%}
 {% block body %}
 {% include 'samples/widgets/mitre_attack.html' with context %}
 

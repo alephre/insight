@@ -1,49 +1,30 @@
 {% extends 'layout.html' %}
-{% block title %}Sample Report {{ sample._id|truncate(255, True) }}{% endblock %}
+{% block title %}Sample Report | {{ sample.id|truncate(255, True) }}{% endblock %}
+{% block header -%}{% include 'samples/widgets/sample_header.html' with context -%}{% endblock -%}
 {% block body %}
-{{ bootstrap.block_header('Analysis Overview') }}
-
 <div class="row">
-
-    <!-- Basic File Information -->
-    <div class="col-lg-12 col-md-12">
-        {{ bootstrap.card_open() }}
-                    <dl class="row">
-                    {{ bootstrap.add_dl_item('Known Filenames:', sample.tracking_data.known_filenames|join(', ')) }}
-                    {{ bootstrap.add_dl_item('Size:', sample.metadata.size|filesizeformat) }}
-                    {{ bootstrap.add_dl_item('Timestamp:', sample.metadata.timestamp) }}
-                    {{ bootstrap.add_dl_item('File Type:', sample.metadata.filetype) }}
-                    {{ bootstrap.add_dl_item('File Description:', sample.metadata.filetype_desc) }}
-                    </dl>
-        {{ bootstrap.card_close() }}
-    </div><!-- .col -->
-    <!-- /Basic File Information -->
-
-</div><!-- .row -->
-
-<div class="row spaced">
 {% set evil_rating = (sample.evil_rating()/48)*100 %}
 {% if evil_rating < 75 -%}
-{% set evil_color = 'deep-purple' -%}
+{% set evil_color = 'primary' -%}
 {% else -%}
-{% set evil_color = 'red' -%}
+{% set evil_color = 'danger' -%}
 {% endif -%}
 {% if evil_rating > 0 -%}
-{{ bootstrap.infobox('Evil Rating'|upper,'%.2f%%'|format(evil_rating),icon_name='bug_report', color=evil_color, count_to=True, count_decimals=2, count_number=evil_rating) }}
+{{ bootstrap.infobox('Evil Rating'|upper,'%.2f%%'|format(evil_rating),icon_name='bug', color=evil_color, count_to=True, count_decimals=2, count_number=evil_rating) }}
 {% else -%}
-{{ bootstrap.infobox('Evil Rating'|upper,'%.2f%%'|format(evil_rating),icon_name='bug_report', color=evil_color) }}
+{{ bootstrap.infobox('Evil Rating'|upper,'%.2f%%'|format(evil_rating),icon_name='bug', color=evil_color) }}
 {% endif -%}
-{{ bootstrap.infobox('Artifacts'|upper,sample.total_artifacts(),icon_name='fingerprint', color='deep-purple', count_to=True) }}
-{{ bootstrap.infobox('Flags'|upper,sample.total_flags(),icon_name='flag', color='deep-purple', count_to=True) }}
-{{ bootstrap.infobox('Mitre Att&ck Tactics'|upper,sample.total_mitre_attack_tactics(),icon_name='lightbulb_outline', color='deep-purple', count_to=True) }}
+{{ bootstrap.infobox('Artifacts'|upper,sample.total_artifacts(),icon_name='fingerprint', count_to=True) }}
+{{ bootstrap.infobox('Flags'|upper,sample.total_flags(),icon_name='flag', count_to=True) }}
+{{ bootstrap.infobox('Mitre Att&ck Tactics'|upper,sample.total_mitre_attack_tactics(),icon_name='lightbulb', count_to=True) }}
 </div><!-- .row -->
 
 {{ bootstrap.block_header('Threat analysis') }}
 <div class="row">
     <!-- Threat Analysis -->
     <div class="col-md-12">
-    {{ bootstrap.card_open() }}
         {% if sample.tracking_data.analyzers_completed|count > 0 -%}
+    {{ bootstrap.card_open() }}
         {{ bootstrap.table_open(classes=['table-condensed','dashboard-task-infos'], head_values=['Analyzer','Info','Uncommon','Suspicious','Malicious','Evil Rating']) }}
             {% for ta in threat_analysis -%}
                 <tr>
@@ -58,10 +39,10 @@
                 </tr>
             {% endfor -%}
         {{ bootstrap.table_close() }}
+    {{ bootstrap.card_close() }}
         {% else -%}
         <p>Threat analysis not performed on this file.</p>
         {% endif -%}
-    {{ bootstrap.card_close() }}
     </div><!-- .col -->
     <!-- /Threat Analysis -->
 </div><!-- .row -->
@@ -84,14 +65,14 @@
 {{ bootstrap.block_header('Pipeline information') }}
 <div class="row">
     <!-- Processors -->
-    <div class="col-md-6 col-sm-12">
+    <div class="col-md-6 col-sm-12 mb-4">
         {{ bootstrap.card_open(header='Processors') }}
         {% if sample.tracking_data.processors_dispatched|count > 0 -%}
         <ul class="list-group">
         {% for processor in sample.tracking_data.processors_dispatched -%}
             <li class="list-group-item">
                 {{ processor|fromkey }}
-                {% if processor in sample.tracking_data.processors_completed -%}{{ bootstrap.label('completed', class='pull-right label-success') }}{% else %}{{ bootstrap.label('pending', class='pull-right label-primary') }}{% endif -%}
+                {% if processor in sample.tracking_data.processors_completed -%}{{ bootstrap.badge('completed', class='float-right badge-success') }}{% else %}{{ bootstrap.badge('pending', class='float-right badge-light') }}{% endif -%}
             </li>
         {% endfor -%}
         </ul><!-- .list-group -->
@@ -110,7 +91,7 @@
         {% for analyzer in sample.tracking_data.analyzers_dispatched -%}
             <li class="list-group-item">
                 {{ analyzer|fromkey }}
-                {% if analyzer in sample.tracking_data.analyzers_completed -%}{{ bootstrap.label('completed', class='pull-right label-success') }}{% else %}{{ bootstrap.label('pending', class='pull-right label-primary') }}{% endif -%}
+                {% if analyzer in sample.tracking_data.analyzers_completed -%}{{ bootstrap.badge('completed', class='float-right badge-success') }}{% else %}{{ bootstrap.badge('pending', class='float-right badge-light') }}{% endif -%}
             </li>
         {% endfor -%}
         </ul><!-- .list-group -->

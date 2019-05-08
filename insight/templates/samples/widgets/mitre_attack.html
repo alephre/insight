@@ -1,23 +1,26 @@
-{{ bootstrap.block_header('Mitre ATT&CK') }}
+<div class="row mb-4">
+    <div class="col-lg-12 col-md-12">
+{{ bootstrap.card_open(sub_header='Mitre Att&ck', header='ATT&CK Matrix for Enterprise') }}
         {{ bootstrap.table_open(head_values=kill_chain_headers, small_header=True, classes=['mitre-attack-table']) }}
 <tr>
 {% for phase, ma_ids in kill_chain.items() -%}
     <td>
-        <ul class="list-group">
     {% for ma_id, ma_obj in ma_ids.items() -%}
     {% if ma_obj.highest_severity == 4 -%}
-    {% set ma_bg = 'bg-red' %}
+    {% set ma_bg = 'danger' %}
     {% elif ma_obj.highest_severity == 3 -%}
-    {% set ma_bg = 'bg-deep-purple' %}
+    {% set ma_bg = 'warning' %}
     {% elif ma_obj.highest_severity == 2 -%}
-    {% set ma_bg = 'bg-blue-grey' %}
+    {% set ma_bg = 'primary' %}
     {% else -%}
-    {% set ma_bg = 'bg-grey' %}
+    {% set ma_bg = 'secondary' %}
     {% endif -%}
-            <li class="list-group-item {{ ma_bg }}">{{ ma_entries[ma_id].name }} ({{ ma_obj.flags|count }})</li>
+            <span class="badge badge-{{ ma_bg }}">{{ ma_entries[ma_id].name }} ({{ ma_obj.flags|count }})</span><br />
     {% endfor -%}
-        </ul><!-- end :: ma flag list -->
     </td><!-- end :: {{ phase }} -->
 {% endfor -%}
 </tr>
 {{ bootstrap.table_close() }}
+{{ bootstrap.card_close() }}
+    </div><!-- .col -->
+</div><!-- .row -->

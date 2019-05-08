@@ -193,8 +193,9 @@ def analysis(sample_id):
         'discovery': {},
         'lateral-movement': {},
         'collection': {},
-        'exfiltration': {},
         'command-and-control': {},
+        'exfiltration': {},
+        'impact': {},
     }
     kill_chain_headers = [x.replace('-',' ') for x in kill_chain_phases.keys()]
     ma_phases, ma_entries = ma_get_definitions()
@@ -205,6 +206,7 @@ def analysis(sample_id):
         for flag in f_flags:
             for ma in flag['mitre_attack_id']:
                 for phase, ids in ma_phases.items():
+                    print(phase)
                     kp = kill_chain_phases[phase]
                     if ma in ids:
                         if not ma in kp.keys():

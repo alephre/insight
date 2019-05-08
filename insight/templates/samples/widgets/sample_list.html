@@ -1,3 +1,10 @@
+{% set status_colors = {
+    'processed': 'success',
+    'processing': 'default',
+    'analyzing': 'info',
+    'analyzed': 'primary',
+    'pending': 'secondary'
+} %}
 {% if samples|count == 0 %}
     <p>No samples were found. You can also <a href="{{ url_for('samples.submit') }}">submit your own</a>.</p>
 {% else -%}
@@ -9,10 +16,19 @@
                         <td data-title="Name">{{ sample.tracking_data.known_filenames[0]|truncate(64, True) }}</td>
                         <td data-title="Filetype">{{ sample.metadata.filetype }}</td>
                         <td data-title="Evil Rating">{{ bootstrap.progress(sample.evil_rating(), max=48) }}</td>
-                        <td data-title="Status">{% if 'scan_completed' in sample.tracking_data.tags %}<span class="badge badge-success">completed</span>{% else %}<span class="badge badge-light">pending</span>{% endif %}</td>
+                        <td data-title="Status">
+                            <span class="badge badge-dot mr-4">
+                                <i class="bg-{{ status_colors[sample.status] }}"></i> {{ sample.status }}
+                            </span>
+                        </td>
                         <td data-title=""><a href="{{ url_for('samples.view', sample_id=sample.id) }}" role="button" class="btn btn-primary btn-block">View</a></td>
                     </tr>
                     {% endfor %}
             {{ bootstrap.table_close() }}
+            {% if num_pages -%}
+            <div class="card-footer pt-4 pb-0 pr-0">
+            {% include 'samples/widgets/pagination.html' -%}
+            </div>
+            {% endif -%}
         {{ bootstrap.card_close() }}
 {% endif -%}

@@ -62,6 +62,37 @@ class Sample(object):
         return total_evil
 
     @property
+    def status(self):
+
+        td_processors = {
+            'completed': self.tracking_data['processors_completed'],
+            'dispatched': self.tracking_data['processors_dispatched'],
+        }
+
+        td_analyzers = {
+            'completed': self.tracking_data['analyzers_completed'],
+            'dispatched': self.tracking_data['analyzers_dispatched'],
+        }
+
+        # Analyzing & Analyzed
+        if len(td_analyzers['dispatched']) > 0:
+            if td_analyzers['dispatched'] == td_analyzers['completed']:
+                return 'analyzed'
+            else:
+                return 'analyzing'
+
+
+        # Processing & Processed
+        if len(td_processors['dispatched']) > 0:
+            if td_processors['dispatched'] == td_processors['completed']:
+                return 'processed'
+            else:
+                return 'processing'
+
+        return 'pending'
+
+
+    @property
     def filename(self):
         return self.tracking_data['known_filenames'][0]
 
@@ -71,7 +102,7 @@ class Sample(object):
 
     @property
     def screen_name(self):
-        return "%s [%s]" % (self.filename, self.id)
+        return "%s [%s]" % (self.filename, self.filetype)
 
 
 class Datastore(object):

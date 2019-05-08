@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% block title %}Sample Report {{ sample_id|truncate(255, True) }}{% endblock %}
+{% block title %}IOCs | {{ sample.id|truncate(255, True) }}{% endblock %}
 {% block css -%}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap4.min.css') }}">
 {% endblock -%}
@@ -12,9 +12,10 @@ $(document).ready(function() {
 } );
 </script>
 {% endblock -%}
+{% block header -%}{% include 'samples/widgets/sample_header.html' with context -%}{% endblock -%}
 {% block body %}
-{{ bootstrap.block_header('IOCs') }}
 {% if ioc_count > 0 -%}
+          {{ bootstrap.card_open(header='Indicators of Compromise', sub_header='Classified by type') }}
           {% for ioc, values in sample.metadata.iocs.items() %}
 <div class="panel-group" id="accordion_{{ ioc }}" role="tablist" aria-multiselectable="true">
     {% with key=ioc, value=values -%}
@@ -23,6 +24,7 @@ $(document).ready(function() {
 </div><!-- .panel-group -->
 
           {% endfor %}
+          {{ bootstrap.card_close() }}
 {% else -%}
     <p>No IOCs found for this sample.</p>
 {% endif -%}

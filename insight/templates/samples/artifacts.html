@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% block title %}Sample Report {{ sample_id|truncate(255, True) }}{% endblock %}
+{% block title %}Artifacts | {{ sample.id|truncate(255, True) }}{% endblock %}
 {% block css -%}
 <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap4.min.css') }}">
 {% endblock -%}
@@ -12,8 +12,8 @@ $(document).ready(function() {
 } );
 </script>
 {% endblock -%}
+{% block header -%}{% include 'samples/widgets/sample_header.html' with context -%}{% endblock -%}
 {% block body %}
-{{ bootstrap.block_header('Artifacts') }}
           {% for artifact, values in sample.metadata.artifacts.items() %}
         <a name='{{artifact}}'></a>
             {% with artifact=artifact, values=values   %}
