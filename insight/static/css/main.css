@@ -1,0 +1,7 @@
+.dataTables_info, .dt-bootstrap4 label { 
+    font-size: 0.8em;
+}
+
+@media (max-width: 767px) {
+    #sampleHeader .text-right { text-align: left !important; }
+}

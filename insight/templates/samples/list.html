@@ -1,5 +1,5 @@
 {% extends 'layout.html' %}
-{% if query -%}{% set title = 'Search results for: '+query -%}{% else -%}{% set title = 'Sample list' -%}{% endif -%}
+{% if search_query -%}{% set title = 'Search results for: '+search_query -%}{% else -%}{% set title = 'Sample list' -%}{% endif -%}
 {% block title %}{{ title }}{% endblock %}
 {% block body %}
 

@@ -18,7 +18,7 @@
 {% block body -%}
 
 <div id="bigChart" class="row">
-    <div class="col-lg-9 col-md-12">
+    <div class="col-lg-9 col-md-12 mb-4">
 {{ bootstrap.card_open(header='Sample quantity over time', classes=['bg-gradient-default'], dark=True, sub_header='Histogram'|upper) }}
 {{ bootstrap.chart('histogram_chart', height=80) }}
 {{ bootstrap.card_close() }}
@@ -31,7 +31,7 @@
 </div><!-- .row -->
 
 
-{{ bootstrap.block_header('Latest samples'|upper, all_url=url_for('samples.index'), all_text='View all samples') }}
+{{ bootstrap.block_header('Latest samples'|upper, all_count=samples|count, all_url=url_for('samples.index'), all_text='View all samples') }}
 <div class="row">
     <div class="col-lg-12 col-md-12">
     {% include 'samples/widgets/sample_list.html' -%}

@@ -98,6 +98,9 @@ class Elasticsearch(Datastore):
 
     def mget(self, sample_ids):
 
+        if not sample_ids:
+            return None
+
         metadata = {s['_id']:s for s in self._mget(sample_ids)}
         tracking_data = {s['_id']:s for s in self._mget(sample_ids, index=self.tracking_index)}
 
@@ -107,7 +110,8 @@ class Elasticsearch(Datastore):
         entries = []
 
         for sample_id, v in metadata.items():
-            entries.append(Sample(metadata[sample_id], tracking_data[sample_id]))
+            if '_source' in metadata[sample_id].keys() and '_source' in tracking_data[sample_id].keys():
+                entries.append(Sample(metadata[sample_id], tracking_data[sample_id]))
 
         return entries
 

@@ -1,7 +1,6 @@
 from flask import Blueprint, render_template, flash, current_app
 
 from insight.models import Sample
-from insight.cache import cache
 from insight.common.utils import check_celery_status
 
 mod = Blueprint('general', __name__) 

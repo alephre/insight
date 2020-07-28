@@ -3,37 +3,38 @@
 <html>
 
 {% with parent=self -%}
-{% include 'layout/head.html' -%}
+    <head>
+{% include 'layout/head.html' %}
+{% block css %}{% endblock %}
+    </head>
 {% endwith -%}
 
     <body>
-
     {% with parent=self -%}
-        {% include 'layout/nav.html' with context -%}
+        {% include 'layout/nav.html' with context %}
     {% endwith -%}
    <section class="main-content">
         {% with parent=self -%}
-            {% include 'layout/topnav.html' with context -%}
+            {% include 'layout/topnav.html' with context %}
         {% endwith -%}
         <!-- Page Header home-8/9 sample-6/6-->
         <div class="header bg-gradient-primary pb-{% if sample %}5{% else %}9{% endif %} pt-5 pt-md-8">
           <div class="container-fluid">
-            {% include 'layout/alerts.html' -%}
+            {% include 'layout/alerts.html' %}
             <div class="header-body">
-            {% block header -%}{% endblock -%}
+            {% block header -%}{% endblock %}
             </div><!-- .header-body -->
           </div><!-- .container-fluid -->
         </div><!-- header -->
         <!-- Page Content -->
         <div class="container-fluid mt--{% if sample %}5{% else %}9{% endif %}">
-        {% block body -%}{% endblock -%}
+        {% block body -%}{% endblock %}
         
-        {% include 'layout/footer.html' -%}
+        {% include 'layout/footer.html' %}
        </div>
     </section>
         {% include 'layout/scripts.html' -%}
-        {% block css -%}{% endblock -%}
-        {% block javascript -%}{% endblock -%}
+        {% block javascript %}{% endblock %}
     </body>
 
 </html>

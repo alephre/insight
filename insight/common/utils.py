@@ -2,7 +2,8 @@ from datetime import datetime
 from base64 import b64encode, b64decode
 from celery import Celery
 
-from insight.config.constants import ALEPH_TASK_PROCESS
+from insight.cache import cache
+from insight.config.constants import ALEPH_TASK_PROCESS, CACHE_LONG_TIMEOUT
 from insight.config import settings
 
 celery = Celery(__name__,
@@ -39,6 +40,7 @@ def dispatch(data, metadata={}, filename=None):
 
     return False
 
+@cache.memoize(CACHE_LONG_TIMEOUT)
 def check_celery_status():
 
     MAX_RUNS = 5

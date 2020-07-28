@@ -19,21 +19,21 @@
 {{ bootstrap.infobox('Mitre Att&ck Tactics'|upper,sample.total_mitre_attack_tactics(),icon_name='lightbulb', count_to=True) }}
 </div><!-- .row -->
 
-{{ bootstrap.block_header('Threat analysis', all_url=url_for('samples.analysis', sample_id=sample.id)) }}
+{{ bootstrap.block_header('Threat analysis', all_count = sample.metadata.flags|count, all_url=url_for('samples.analysis', sample_id=sample.id)) }}
 <div class="row">
     <!-- Threat Analysis -->
     <div class="col-md-12">
         {% if sample.tracking_data.analyzers_completed|count > 0 -%}
     {{ bootstrap.card_open() }}
-        {{ bootstrap.table_open(classes=['table-condensed','dashboard-task-infos'], head_values=['Analyzer','Info','Uncommon','Suspicious','Malicious','Evil Rating']) }}
+        {{ bootstrap.table_open(classes=['table-condensed','dashboard-task-infos'], head_values=['Analyzer','Info','Uncommon','Suspicious','Malicious','Evil Rating'], dataTable=False, flush=True) }}
             {% for ta in threat_analysis -%}
                 <tr>
-                    <td>{{ ta.analyzer|fromkey }}</td>
-                    <td>{{ ta.info }}</td>
-                    <td>{{ ta.uncommon }}</td>
-                    <td>{{ ta.suspicious }}</td>
-                    <td>{{ ta.malicious }}</td>
-                    <td>
+                    <td data-title="Analyzer">{{ ta.analyzer|fromkey }}</td>
+                    <td data-title="Info">{{ ta.info }}</td>
+                    <td data-title="Uncommon">{{ ta.uncommon }}</td>
+                    <td data-title="Suspicious">{{ ta.suspicious }}</td>
+                    <td data-title="Malicious">{{ ta.malicious }}</td>
+                    <td data-title="Evil Rating">
                         {{ bootstrap.progress(ta.evil_rating, max=48, showPercent=False) }}
                     </td>
                 </tr>
@@ -46,7 +46,7 @@
     </div><!-- .col -->
     <!-- /Threat Analysis -->
 </div><!-- .row -->
-{{ bootstrap.block_header('High severity flags', all_url=url_for('samples.analysis', sample_id=sample.id)) }}
+{{ bootstrap.block_header('High severity flags', all_count=suspicious_flags|count, all_url=url_for('samples.analysis', sample_id=sample.id)) }}
 <div class="row spaced">
     <!-- Flags -->
     <div class="col-md-12">

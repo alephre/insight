@@ -102,10 +102,12 @@ def universe(sample_id):
     ei = current_app.datastore.mget(list(entities))
     locations = set()
 
-    for e in ei:
-        entity_info[e.id] = e
-        if e.metadata['filetype'] == 'meta/location':
-            locations.add(e)
+    if ei:
+
+        for e in ei:
+            entity_info[e.id] = e
+            if e.metadata['filetype'] == 'meta/location':
+                locations.add(e)
 
     return render_template('samples/universe.html', sample=sample, tree=tree, entity_info=entity_info, locations=locations)
 

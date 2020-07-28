@@ -1,10 +1,11 @@
 <div class="row mb-4">
     <div class="col-lg-12 col-md-12">
 {{ bootstrap.card_open(sub_header='Mitre Att&ck', header='ATT&CK Matrix for Enterprise') }}
-        {{ bootstrap.table_open(head_values=kill_chain_headers, small_header=True, classes=['mitre-attack-table']) }}
+        {{ bootstrap.table_open(head_values=kill_chain_headers, small_header=True, classes=['mitre-attack-table'], dataTable=False) }}
 <tr>
 {% for phase, ma_ids in kill_chain.items() -%}
-    <td>
+    {% set phase_name = ' '.join(phase.split('-'))|fromkey %}
+    <td data-title="{{ phase_name }}">
     {% for ma_id, ma_obj in ma_ids.items() -%}
     {% if ma_obj.highest_severity == 4 -%}
     {% set ma_bg = 'danger' %}

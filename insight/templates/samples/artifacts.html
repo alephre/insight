@@ -1,11 +1,11 @@
 {% extends 'layout.html' %}
 {% block title %}Artifacts | {{ sample.id|truncate(255, True) }}{% endblock %}
 {% block css -%}
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap4.min.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='vendor/datatables/css/dataTables.bootstrap4.min.css') }}">
 {% endblock -%}
 {% block javascript -%}
-<script type="text/javascript" language="javascript" src="{{ url_for('static', filename='plugins/datatables/jquery.dataTables.min.js') }}"></script>
-<script type="text/javascript" language="javascript" src="{{ url_for('static', filename='plugins/datatables/dataTables.bootstrap4.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ url_for('static', filename='vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+<script type="text/javascript" language="javascript" src="{{ url_for('static', filename='vendor/datatables/js/dataTables.bootstrap4.min.js') }}"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     $('.data-table').DataTable();

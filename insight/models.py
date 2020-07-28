@@ -76,7 +76,7 @@ class Sample(object):
 
         # Analyzing & Analyzed
         if len(td_analyzers['dispatched']) > 0:
-            if td_analyzers['dispatched'] == td_analyzers['completed']:
+            if set(td_analyzers['dispatched']) == set(td_analyzers['completed']):
                 return 'analyzed'
             else:
                 return 'analyzing'
@@ -84,7 +84,7 @@ class Sample(object):
 
         # Processing & Processed
         if len(td_processors['dispatched']) > 0:
-            if td_processors['dispatched'] == td_processors['completed']:
+            if set(td_processors['dispatched']) == set(td_processors['completed']):
                 return 'processed'
             else:
                 return 'processing'

@@ -1,7 +1,7 @@
-{% macro block_header(text, all_url=None, all_color='primary', all_text='View all') -%}
+{% macro block_header(text, all_url=None, all_count=None, all_color='primary', all_text='View all') -%}
 <div class="row block-header mt-5">
     <h2 class="col-md-10 col-9">{{ text|upper }}</h2>
-    {% if all_url -%}
+    {% if all_url and (all_count is none or all_count > 0) -%}
     <div class="col-md-2 col-3 text-right">
     <a href="{{ all_url }}"><button class="btn btn-{{ all_color }} btn-sm" type="button">{{ all_text }}</button></a>
     </div>
@@ -104,16 +104,16 @@
 </div><!-- .card -->
 {% endmacro -%}
 
-{% macro table_open(classes = [], head_values = [], small_header=False) -%}
+{% macro table_open(classes = [], head_values = [], small_header=False, dataTable=True, flush=False) -%}
 <div class="table-responsive no-more-tables mb-4">
-    <table class="table data-table {{ classes|join(' ') }}">
+    <table class="table {% if dataTable %}data-table {% endif %}{{ classes|join(' ') }}{% if flush %} table-flush{% endif %}">
         <thead class="thead-light">
         <tr>
         {% for hv in head_values -%}
             {% if small_header -%}
             <th scope="col"><small>{{ hv|fromkey }}</small></th>
             {% else -%}
-            <th>{{ hv|fromkey }}</th>
+            <th scope="col">{{ hv|fromkey }}</th>
             {% endif -%}
         {% endfor -%}
         </tr>
